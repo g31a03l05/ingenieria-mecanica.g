@@ -360,4 +360,174 @@
               const diasACursar = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos : infoMat.dias;
               diasACursar.forEach(d => {
                 if (!diasOcupados[d]) diasOcupados[d] = [];
-                diasOcupados
+                diasOcupados[d].push(materia.substring(0, 12) + ".");
+              });
+            }
+
+            const divMateria = document.createElement('div');
+            divMateria.className = 'materia';
+            divMateria.setAttribute('data-materia', materia);
+            
+            if (historial.estado === 'aprobada') divMateria.classList.add('estado-aprobada');
+            else if (historial.estado === 'regular') divMateria.classList.add('estado-regular');
+            else if (historial.estado === 'cursando') divMateria.classList.add('estado-cursando');
+            else if (esHabilitada) divMateria.classList.add('estado-crema');
+            else divMateria.classList.add('estado-bloqueada');
+            
+            if (historial.estado === 'aprobada' && historial.nota) {
+              divMateria.innerHTML += `<span class="nota-badge">${historial.nota}</span>`;
+            }
+
+            divMateria.innerHTML += `
+              <strong>${materia}</strong>
+              <div class="materia-meta">
+                <span>${infoMat.horas}</span>
+                <span>${infoMat.dias.join(', ')}</span>
+              </div>
+            `;
+            
+            divMateria.addEventListener('click', (e) => {
+              if (e.detail === 1) {
+                setTimeout(() => { if (e.detail === 1) auditarMateria(materia); }, 220);
+              } else if (e.detail === 2) {
+                abrirGestionMateria(materia);
+              } else if (e.detail >= 3) {
+                restaurarVistaGeneral();
+              }
+            });
+
+            columna.appendChild(divMateria);
+          });
+
+          divFilaCuatris.appendChild(columna);
+        });
+
+        divAño.appendChild(divFilaCuatris);
+        cont.appendChild(divAño);
+      });
+
+      document.getElementById('stat-horas').innerText = `${acumuladorHoras} hs`;
+      document.getElementById('stat-regulares').innerText = contadorRegulares;
+      document.getElementById('stat-aprobadas').innerText = contadorAprobadas;
+      document.getElementById('stat-porcentaje').innerText = `${((contadorAprobadas / totalMateriasPlan) * 100).toFixed(1)}%`;
+      if(cantidadMateriasConNota === 0) document.getElementById('stat-promedio').innerText = "0.00";
+
+      renderWidgets(sugeridas, diasOcupados);
+    }
+
+    function renderWidgets(sugeridas, diasOcupados) {
+      const list = document.getElementById('lista-sugeridas');
+      if(list) {
+        list.innerHTML = sugeridas.length ? sugeridas.map(m => `<li>${m} <span style="opacity:0.7; font-weight:normal;">(${datosMaterias[m].dias.join(', ')})</span></li>`).join('') : '<li>No hay nuevas sugerencias.</li>';
+      }
+
+      const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      const cal = document.getElementById('calendar');
+      if(cal) {
+        cal.innerHTML = diasSemana.map(d => {
+          const mats = diasOcupados[d] || [];
+          return `
+            <div class="calendar-day ${mats.length ? 'active' : ''}">
+              <div class="day-name">${d}</div>
+              <div>${mats.length ? mats.map(m => `<div class="calendar-mat-tag">${m}</div>`).join('') : '<span style="opacity:0.3;">-</span>'}</div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function auditarMateria(nombreMateria) {
+      const info = datosMaterias[nombreMateria];
+      if (!info) return;
+
+      document.querySelectorAll('.materia').forEach(m => {
+        m.classList.remove('highlight-missing', 'highlight-ok', 'dimmed');
+        if (m.getAttribute('data-materia') !== nombreMateria) m.classList.add('dimmed');
+      });
+
+      const reqListCont = document.getElementById('info-correlativas');
+      if(reqListCont) reqListCont.innerHTML = '';
+
+      info.req.forEach(reqNombre => {
+        const mReq = progresoUsuario[reqNombre];
+        const habilitada = mReq && (mReq.estado === 'aprobada' || mReq.estado === 'regular');
+        const targetCard = document.querySelector(`[data-materia="${reqNombre}"]`);
+        
+        if (targetCard) {
+          targetCard.classList.remove('dimmed');
+          targetCard.classList.add(habilitada ? 'highlight-ok' : 'highlight-missing');
+        }
+      });
+    }
+
+    function abrirGestionMateria(nombreMateria) {
+      mSeleccionada = nombreMateria;
+      const info = datosMaterias[nombreMateria];
+      
+      document.getElementById('sidebar-default').style.display = 'none';
+      document.getElementById('sidebar-content').style.display = 'block';
+      document.getElementById('info-nombre').innerText = nombreMateria;
+      document.getElementById('info-horas').innerText = info.horas;
+      document.getElementById('info-dias').innerText = info.dias.join(', ');
+      document.getElementById('info-turnos').innerText = info.turno;
+
+      const historial = progresoUsuario[nombreMateria] || { estado: 'pendiente', nota: '', diasElegidos: [] };
+      document.getElementById('input-estado').value = historial.estado;
+      document.getElementById('input-nota').value = historial.nota || '';
+
+      const checkCont = document.getElementById('checkbox-container');
+      checkCont.innerHTML = info.dias.map(d => {
+        const checked = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos.includes(d) : true;
+        return `<label style="display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox" name="elegir-dia" value="${d}" ${checked ? 'checked' : ''}> ${d}</label>`;
+      }).join('');
+
+      toggleFormulariosDinamicos();
+      auditarMateria(nombreMateria);
+    }
+
+    function agregarNuevoDiaAMateria() {
+      if (!mSeleccionada) return;
+      const nuevoDia = document.getElementById('select-nuevo-dia').value;
+      
+      if (!datosMaterias[mSeleccionada].dias.includes(nuevoDia)) {
+        datosMaterias[mSeleccionada].dias.push(nuevoDia);
+        localStorage.setItem('datosMateriasMecanicaUNLZ', JSON.stringify(datosMaterias));
+        
+        document.getElementById('info-dias').innerText = datosMaterias[mSeleccionada].dias.join(', ');
+        const historial = progresoUsuario[mSeleccionada] || { estado: 'pendiente', nota: '', diasElegidos: [] };
+        abrirGestionMateria(mSeleccionada);
+      }
+    }
+
+    function toggleFormulariosDinamicos() {
+      const estado = document.getElementById('input-estado').value;
+      document.getElementById('group-nota').style.display = (estado === 'aprobada') ? 'flex' : 'none';
+      document.getElementById('group-dias-elegidos').style.display = 'flex';
+    }
+
+    function restaurarVistaGeneral() {
+      document.querySelectorAll('.materia').forEach(m => m.classList.remove('highlight-missing', 'highlight-ok', 'dimmed'));
+      document.getElementById('sidebar-default').style.display = 'block';
+      document.getElementById('sidebar-content').style.display = 'none';
+      mSeleccionada = "";
+    }
+
+    function guardarEstadoMateria() {
+      if (!mSeleccionada) return;
+      const estado = document.getElementById('input-estado').value;
+      const nota = document.getElementById('input-nota').value;
+
+      let diasElegidos = [];
+      document.querySelectorAll('input[name="elegir-dia"]:checked').forEach(chk => diasElegidos.push(chk.value));
+
+      progresoUsuario[mSeleccionada] = { estado: estado, nota: estado === 'aprobada' ? nota : null, diasElegidos: diasElegidos };
+      localStorage.setItem('progresoMecanicaUNLZ_V3', JSON.stringify(progresoUsuario));
+      
+      renderMalla();
+      restaurarVistaGeneral();
+    }
+
+    window.onload = () => { renderMalla(); };
+  </script>
+</body>
+</html>
