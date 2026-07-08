@@ -1,3 +1,10 @@
+¡Hecho! En los planes de estudio es súper común que para cursar una materia avanzada solo te pidan tener la cursada Regular (firmada) de la anterior, pero para rendir el final sí necesites el final aprobado.
+
+Modifiqué la lógica de validación para que sea más flexible: ahora, si la correlativa previa está tanto en estado "Aprobada" como en "Regular", el sistema la tomará como válida para destrabar la cursada y aparecerá en color verde (✔ Habilitada). Si está pendiente o la estás cursando, te avisará que sigue bloqueada.
+
+Reemplaza el código completo de tu archivo por esta versión actualizada:
+
+HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -102,8 +109,44 @@
       margin-top: 6px;
       font-size: 0.75rem;
     }
+    .nota-badge {
+      position: absolute;
+      top: -8px;
+      right: -5px;
+      background-color: #27ae60;
+      color: white;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: bold;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+    }
     
-    /* Panel Lateral de Estado */
+    /* Estados de las materias */
+    .materia.estado-aprobada {
+      border-color: #2ecc71 !important;
+      background-color: #eafeea !important;
+    }
+    .materia.estado-regular {
+      border-color: #f1c40f !important;
+      background-color: #fef9e7 !important;
+    }
+    .materia.estado-cursando {
+      border-color: #3498db !important;
+      background-color: #ebf5fb !important;
+    }
+
+    /* Modificadores de auditoría visual */
+    .materia.highlight-missing {
+      border-color: #e74c3c !important;
+      background-color: #fdeaea !important;
+      box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
+    }
+    .materia.dimmed {
+      opacity: 0.25;
+    }
+
+    /* Panel Lateral */
     .sidebar-panel {
       flex: 1;
       min-width: 300px;
@@ -121,26 +164,34 @@
       border-bottom: 2px solid #880e0e;
       padding-bottom: 0.5rem;
     }
+    .form-group {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-group select, .form-group input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .btn-guardar {
+      margin-top: 15px;
+      background-color: #880e0e;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-guardar:hover {
+      background-color: #b71c1c;
+    }
     .req-list {
       padding-left: 20px;
       margin: 10px 0;
-    }
-    .req-list li {
-      margin-bottom: 5px;
-    }
-
-    /* Estados dinámicos interactivos mediante JS */
-    .materia.highlight-missing {
-      border-color: #e74c3c !important;
-      background-color: #fdeaea !important;
-      box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
-    }
-    .materia.highlight-ok {
-      border-color: #2ecc71 !important;
-      background-color: #eafeea !important;
-    }
-    .materia.dimmed {
-      opacity: 0.25;
     }
   </style>
 </head>
@@ -166,17 +217,37 @@
     <div class="malla-container" id="malla"></div>
 
     <aside class="sidebar-panel">
-      <h3>Análisis de Materia</h3>
+      <h3>Gestión de Materia</h3>
       <div id="sidebar-default">
-        <p>Haz clic sobre cualquier materia de la malla para auditar sus dependencias y verificar qué te falta desbloquear.</p>
+        <p>Haz clic sobre cualquier materia para auditar correlativas, asignar tu nota o marcar si adeudas el examen final.</p>
       </div>
+      
       <div id="sidebar-content" style="display: none;">
         <h4 id="info-nombre" style="color: #880e0e; margin-bottom: 8px;"></h4>
-        <p style="margin: 5px 0;"><strong>Carga Horaria:</strong> <span id="info-horas"></span></p>
-        <p style="margin: 5px 0;"><strong>Días de cursada:</strong> <span id="info-dias"></span></p>
-        <p style="margin: 5px 0;"><strong>Turnos disponibles:</strong> <span id="info-turnos"></span></p>
-        <div style="margin-top: 15px;">
-          <strong>Estado de Correlativas:</strong>
+        <p style="margin: 3px 0;"><strong>Horas:</strong> <span id="info-horas"></span> | <span id="info-turnos"></span></p>
+        <p style="margin: 3px 0;"><strong>Cursada:</strong> <span id="info-dias"></span></p>
+        
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        
+        <div class="form-group">
+          <label for="input-estado"><strong>Tu Condición Académica:</strong></label>
+          <select id="input-estado" onchange="toggleInputNota()">
+            <option value="pendiente">Pendiente</option>
+            <option value="cursando">Cursando actualmente</option>
+            <option value="regular">Regular (Adeuda examen final)</option>
+            <option value="aprobada">Aprobada (Final / Promoción)</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="group-nota" style="display: none;">
+          <label for="input-nota"><strong>Nota Final:</strong></label>
+          <input type="number" id="input-nota" min="4" max="10" placeholder="Ej: 8">
+        </div>
+
+        <button class="btn-guardar" onclick="guardarEstadoMateria()">Guardar Historial</button>
+
+        <div style="margin-top: 20px;">
+          <strong>Estado de Correlativas necesarias:</strong>
           <ul class="req-list" id="info-correlativas"></ul>
         </div>
       </div>
@@ -184,70 +255,60 @@
   </div>
 
   <script>
-    // Base de datos completa con horarios reales, carga horaria y turnos
     const datosMaterias = {
       // 1° Cuatrimestre
       'Medios de representación gráfica I': { req: [], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde y Noche' },
       'Taller de informática general y aplicada': { req: [], dias: ['Martes'], horas: '32 hs', turno: 'Tarde y Noche' },
       'Introduccion a la ingenieria': { req: [], dias: ['Miércoles'], horas: '64 hs', turno: 'Tarde y Noche' },
       'Inglés': { req: [], dias: ['Viernes'], horas: '64 hs', turno: 'Tarde y Noche' },
-      
       // 2° Cuatrimestre
       'Medios de representación gráfica II': { req: ['Medios de representación gráfica I'], dias: ['Lunes', 'Viernes'], horas: '128 hs', turno: 'Tarde y Noche' },
       'Fundamentos de programación informática': { req: ['Taller de informática general y aplicada'], dias: ['Martes'], horas: '64 hs', turno: 'Tarde y Noche' },
       'Higiene y seguridad en el trabajo I': { req: ['Introduccion a la ingenieria'], dias: ['Jueves'], horas: '32 hs', turno: 'Noche' },
       'Introducción a la gestión del medio ambiente': { req: ['Introduccion a la ingenieria'], dias: ['Martes', 'Jueves'], horas: '32 hs', turno: 'Tarde y Noche' },
       'Economía I': { req: ['Introduccion a la ingenieria'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
-      
       // 3° Cuatrimestre
-      'Gestión de la calidad': { req: ['Economía I'], dias: ['Lunes', 'Martes'], horas: '32 hs', turno: 'Tarde y Noche (Martes Noche)' },
+      'Gestión de la calidad': { req: ['Economía I'], dias: ['Lunes', 'Martes'], horas: '32 hs', turno: 'Tarde y Noche' },
       'Matemática I': { req: ['Introduccion a la ingenieria'], dias: ['Martes', 'Viernes'], horas: '128 hs', turno: 'Tarde y Noche' },
       'Introducción a la gestión de la innovación y la tecnología': { req: ['Inglés'], dias: ['Miércoles'], horas: '32 hs', turno: 'Tarde y Noche' },
       'Economía II': { req: ['Economía I'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
       'Legislación y ejercicio profesional': { req: ['Higiene y seguridad en el trabajo I'], dias: ['Jueves'], horas: '64 hs', turno: 'Tarde y Noche' },
       'Metrología': { req: ['Medios de representación gráfica II'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
-      
       // 4° Cuatrimestre
       'Matemática II': { req: ['Matemática I'], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde y Noche' },
       'Organizacion y gestion industrial': { req: ['Gestión de la calidad','Economía II'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
       'Física I': { req: ['Matemática I'], dias: ['Miércoles', 'Viernes'], horas: '128 hs', turno: 'Tarde y Noche' },
-      'Fundamentos de la química': { req: ['Introducción a la gestión del medio ambiente'], dias: ['Martes', 'Sábado'], horas: '64 hs', turno: 'Mañana (Martes: Tarde/Noche)' },
-      
+      'Fundamentos de la química': { req: ['Introducción a la gestión del medio ambiente'], dias: ['Martes', 'Sábado'], horas: '64 hs', turno: 'Mañana/Tarde/Noche' },
       // 5° Cuatrimestre
-      'Termodinámica': { req: ['Física I','Fundamentos de la química'], dias: ['Lunes', 'Sábado'], horas: '128 hs', turno: 'Lunes: Noche / Sábado: Mañana' },
+      'Termodinámica': { req: ['Física I','Fundamentos de la química'], dias: ['Lunes', 'Sábado'], horas: '128 hs', turno: 'Noche/Mañana' },
       'Física II': { req: ['Física I'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
       'Cálculo I': { req: ['Matemática II'], dias: ['Miércoles', 'Viernes'], horas: '128 hs', turno: 'Tarde y Noche' },
       'Probabilidad y estadística': { req: ['Matemática I'], dias: ['Jueves'], horas: '64 hs', turno: 'Noche' },
-      
       // 6° Cuatrimestre
       'Estática': { req: ['Física I','Medios de representación gráfica II'], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Noche' },
       'Higiene y seguridad en el trabajo II': { req: ['Medios de representación gráfica II','Física II'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
       'Cálculo II': { req: ['Cálculo I'], dias: ['Martes', 'Viernes'], horas: '128 hs', turno: 'Noche' },
       'Mecánica teórica': { req: ['Cálculo I'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
       'Fundamentos de electrónica': { req: ['Fundamentos de programación informática','Física II'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
-      
       // 7° Cuatrimestre
       'Formulacion gestion y evaluacion de proyectos': { req: ['Organizacion y gestion industrial','Cálculo I'], dias: ['Lunes'], horas: '64 hs', turno: 'Noche' },
       'Ciencia y tecnología de los materiales': { req: ['Estática','Fundamentos de la química'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
       'Sistema y tecnología para la gestión ambiental': { req: ['Fundamentos de la química','Higiene y seguridad en el trabajo II'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
       'Mecanismos': { req: ['Mecánica teórica'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
-      'Electrotecnia': { req: ['Física II'], dias: ['Jueves', 'Sábado'], horas: '128 hs', turno: 'Jueves: Noche / Sábado: Mañana' },
+      'Electrotecnia': { req: ['Física II'], dias: ['Jueves', 'Sábado'], horas: '128 hs', turno: 'Noche/Mañana' },
       'Mecánicas de los materiales': { req: ['Estática'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
-      
       // 8° Cuatrimestre
       'Modelado y dinámica de sistemas físicos': { req: ['Mecánicas de los materiales','Cálculo II'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
       'Tecnología mecánica': { req: ['Mecánicas de los materiales'], dias: ['Miércoles'], horas: '64 hs', turno: 'Noche' },
       'Máquinas e instalaciones eléctricas': { req: ['Electrotecnia'], dias: ['Jueves'], horas: '64 hs', turno: 'Noche' },
       'Mecánica de los fluidos': { req: ['Termodinámica'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
       'Tecnologia del calor': { req: ['Termodinámica'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
-      
       // 9° Cuatrimestre
       'Diseño de componentes de máquinas': { req: ['Probabilidad y estadística','Tecnología mecánica','Modelado y dinámica de sistemas físicos','Metrología'], dias: ['Lunes', 'Jueves'], horas: '96 hs', turno: 'Noche' },
       'Instalaciones industriales y mecánicas de almacenaje': { req: ['Mecánica de los fluidos'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
       'Automatización industrial': { req: ['Mecánica de los fluidos','Electrotecnia'], dias: ['Miércoles'], horas: '64 hs', turno: 'Noche' },
       'Vigilancia tecnológica e inteligencia competitiva': { req: ['Introducción a la gestión de la innovación y la tecnología','Legislación y ejercicio profesional','Tecnología mecánica'], dias: ['Jueves'], horas: '32 hs', turno: 'Noche' },
       'Maquinas termicas': { req: ['Tecnologia del calor'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
-      
       // 10° Cuatrimestre
       'Proyecto en ingeniería mecánica': { req: ['Automatización industrial','Formulacion gestion y evaluacion de proyectos','Maquinas termicas','Vigilancia tecnológica e inteligencia competitiva','Instalaciones industriales y mecánicas de almacenaje'], dias: ['Lunes', 'Miércoles'], horas: '96 hs', turno: 'Noche' },
       'Tecnología de la soldadura': { req: ['Ciencia y tecnología de los materiales'], dias: ['Martes'], horas: '32 hs', turno: 'Noche' },
@@ -256,49 +317,22 @@
       'Sistema de control': { req: ['Automatización industrial'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' }
     };
 
-    // Estructura oficial indexada por cuatrimestres (columnas pareadas por años)
     const estructura = [
-      // Año 1
-      [
-        ["Medios de representación gráfica I", "Introduccion a la ingenieria", "Inglés", "Taller de informática general y aplicada"],
-        ["Medios de representación gráfica II", "Fundamentos de programación informática", "Higiene y seguridad en el trabajo I", "Introducción a la gestión del medio ambiente", "Economía I"]
-      ],
-      // Año 2
-      [
-        ["Gestión de la calidad", "Matemática I", "Introducción a la gestión de la innovación y la tecnología", "Economía II", "Legislación y ejercicio profesional", "Metrología"],
-        ["Matemática II", "Organizacion y gestion industrial", "Física I", "Fundamentos de la química"]
-      ],
-      // Año 3
-      [
-        ["Termodinámica", "Física II", "Cálculo I", "Probabilidad y estadística"],
-        ["Estática", "Higiene y seguridad en el trabajo II", "Cálculo II", "Mecánica teórica", "Fundamentos de electrónica"]
-      ],
-      // Año 4
-      [
-        ["Formulacion gestion y evaluacion de proyectos", "Ciencia y tecnología de los materiales", "Sistema y tecnología para la gestión ambiental", "Mecanismos", "Electrotecnia", "Mecánicas de los materiales"],
-        ["Modelado y dinámica de sistemas físicos", "Tecnología mecánica", "Máquinas e instalaciones eléctricas", "Mecánica de los fluidos", "Tecnologia del calor"]
-      ],
-      // Año 5
-      [
-        ["Diseño de componentes de máquinas", "Instalaciones industriales y mecánicas de almacenaje", "Automatización industrial", "Vigilancia tecnológica e inteligencia competitiva", "Maquinas termicas"],
-        ["Proyecto en ingeniería mecánica", "Tecnología de la soldadura", "Gestion e ingenieria del mantenimiento", "Tecnologia del frio", "Sistema de control"]
-      ]
+      [["Medios de representación gráfica I", "Introduccion a la ingenieria", "Inglés", "Taller de informática general y aplicada"],
+       ["Medios de representación gráfica II", "Fundamentos de programación informática", "Higiene y seguridad en el trabajo I", "Introducción a la gestión del medio ambiente", "Economía I"]],
+      [["Gestión de la calidad", "Matemática I", "Introducción a la gestión de la innovación y la tecnología", "Economía II", "Legislación y ejercicio profesional", "Metrología"],
+       ["Matemática II", "Organizacion y gestion industrial", "Física I", "Fundamentos de la química"]],
+      [["Termodinámica", "Física II", "Cálculo I", "Probabilidad y estadística"],
+       ["Estática", "Higiene y seguridad en el trabajo II", "Cálculo II", "Mecánica teórica", "Fundamentos de electrónica"]],
+      [["Formulacion gestion y evaluacion de proyectos", "Ciencia y tecnología de los materiales", "Sistema y tecnología para la gestión ambiental", "Mecanismos", "Electrotecnia", "Mecánicas de los materiales"],
+       ["Modelado y dinámica de sistemas físicos", "Tecnología mecánica", "Máquinas e instalaciones eléctricas", "Mecánica de los fluidos", "Tecnologia del calor"]],
+      [["Diseño de componentes de máquinas", "Instalaciones industriales y mecánicas de almacenaje", "Automatización industrial", "Vigilancia tecnológica e inteligencia competitiva", "Maquinas termicas"],
+       ["Proyecto en ingeniería mecánica", "Tecnología de la soldadura", "Gestion e ingenieria del mantenimiento", "Tecnologia del frio", "Sistema de control"]]
     ];
 
-    // Simulación de materias aprobadas (Cambia a true las tuyas)
-    const estadosUsuario = {
-      'Medios de representación gráfica I': true,
-      'Introduccion a la ingenieria': true,
-      'Inglés': true,
-      'Taller de informática general y aplicada': true,
-      'Matemática I': true
-    };
+    let progresoUsuario = JSON.parse(localStorage.getItem('progresoMecanicaUNLZ')) || {};
+    let materiaSeleccionadaActual = "";
 
-    function estaAprobada(materia) {
-      return !!estadosUsuario[materia];
-    }
-
-    // Renderizador interactivo
     function renderMalla(diaFiltrado = 'todos') {
       const cont = document.getElementById('malla');
       cont.innerHTML = '';
@@ -310,8 +344,6 @@
         año.forEach((col, colIdx) => {
           const columna = document.createElement('div');
           columna.className = 'cuatri-col';
-
-          // Numeración de cuatrimestres corregida (1 al 10)
           const numCuatri = (añoIdx * 2) + (colIdx + 1);
 
           const titulo = document.createElement('div');
@@ -319,29 +351,29 @@
           titulo.textContent = `${numCuatri}° Cuatrimestre`;
           columna.appendChild(titulo);
 
-          let materiasVisibles = 0;
+          let visibles = 0;
 
           col.forEach(materia => {
             const infoMat = datosMaterias[materia];
-            if (!infoMat) return;
+            if (!infoMat || (diaFiltrado !== 'todos' && !infoMat.dias.includes(diaFiltrado))) return;
 
-            // Filtro por día de cursada
-            if (diaFiltrado !== 'todos' && !infoMat.dias.includes(diaFiltrado)) {
-              return;
-            }
-
-            materiasVisibles++;
-
+            visibles++;
             const divMateria = document.createElement('div');
             divMateria.className = 'materia';
             divMateria.setAttribute('data-materia', materia);
             
-            if (estaAprobada(materia)) {
-              divMateria.classList.add('highlight-ok');
+            const historial = progresoUsuario[materia];
+            if (historial) {
+              if (historial.estado === 'aprobada') divMateria.classList.add('estado-aprobada');
+              if (historial.estado === 'regular') divMateria.classList.add('estado-regular');
+              if (historial.estado === 'cursando') divMateria.classList.add('estado-cursando');
+              
+              if (historial.estado === 'aprobada' && historial.nota) {
+                divMateria.innerHTML += `<span class="nota-badge">${historial.nota}</span>`;
+              }
             }
 
-            // Renderizar la tarjeta con su información compacta de horas
-            divMateria.innerHTML = `
+            divMateria.innerHTML += `
               <strong>${materia}</strong>
               <div class="materia-meta">
                 <span>${infoMat.horas}</span>
@@ -353,19 +385,15 @@
             columna.appendChild(divMateria);
           });
 
-          if (materiasVisibles > 0) {
-            fila.appendChild(columna);
-          }
+          if (visibles > 0) fila.appendChild(columna);
         });
 
-        if (fila.children.length > 0) {
-          cont.appendChild(fila);
-        }
+        if (fila.children.length > 0) cont.appendChild(fila);
       });
     }
 
-    // Auditoría de correlativas en tiempo real
     function auditarMateria(nombreMateria) {
+      materiaSeleccionadaActual = nombreMateria;
       const info = datosMaterias[nombreMateria];
       if (!info) return;
 
@@ -376,51 +404,75 @@
       document.getElementById('info-dias').innerText = info.dias.join(', ');
       document.getElementById('info-turnos').innerText = info.turno;
 
+      const historial = progresoUsuario[nombreMateria] || { estado: 'pendiente', nota: '' };
+      document.getElementById('input-estado').value = historial.estado;
+      document.getElementById('input-nota').value = historial.nota || '';
+      toggleInputNota();
+
       const reqListCont = document.getElementById('info-correlativas');
       reqListCont.innerHTML = '';
 
-      // Limpiar estados de enfoque previos
       document.querySelectorAll('.materia').forEach(m => {
-        m.classList.remove('highlight-missing', 'highlight-ok', 'dimmed');
-        if (estaAprobada(m.getAttribute('data-materia'))) {
-          m.classList.add('highlight-ok');
-        }
+        m.classList.remove('highlight-missing', 'dimmed');
       });
 
-      // Opacar todas las tarjetas excepto la seleccionada para concentrar la vista
       document.querySelectorAll('.materia').forEach(m => {
         if (m.getAttribute('data-materia') !== nombreMateria) m.classList.add('dimmed');
       });
 
       if (info.req.length === 0) {
-        reqListCont.innerHTML = '<li style="color: #2ecc71; font-weight: bold;">¡Materia sin correlativas iniciales! Lista para cursar.</li>';
+        reqListCont.innerHTML = '<li style="color: #2ecc71; font-weight: bold;">Sin correlativas iniciales.</li>';
       } else {
         info.req.forEach(reqNombre => {
-          const aprobada = estaAprobada(reqNombre);
+          const mReq = progresoUsuario[reqNombre];
+          
+          // Lógica flexible: Habilitada si está APROBADA o si está REGULAR (adeuda final)
+          const habilitada = mReq && (mReq.estado === 'aprobada' || mReq.estado === 'regular');
+          
           const li = document.createElement('li');
           li.textContent = reqNombre;
           
-          if (aprobada) {
+          if (habilitada) {
             li.style.color = '#2ecc71';
-            li.textContent += ' (✔ Aprobada)';
+            const det = mReq.estado === 'aprobada' ? '✔ Aprobada' : '✔ Regular (Final Pendiente)';
+            li.textContent += ` (${det})`;
           } else {
+            const cond = mReq ? mReq.estado.toUpperCase() : 'PENDIENTE';
             li.style.color = '#e74c3c';
-            li.textContent += ' (❌ PENDIENTE)';
+            li.textContent += ` (❌ Bloqueante: ${cond})`;
           }
           reqListCont.appendChild(li);
 
-          // Iluminar la correlativa en la malla
           const targetCard = document.querySelector(`[data-materia="${reqNombre}"]`);
           if (targetCard) {
             targetCard.classList.remove('dimmed');
-            if (!aprobada) {
-              targetCard.classList.add('highlight-missing');
-            } else {
-              targetCard.classList.add('highlight-ok');
-            }
+            if (!habilitada) targetCard.classList.add('highlight-missing');
           }
         });
       }
+    }
+
+    function toggleInputNota() {
+      const estado = document.getElementById('input-estado').value;
+      document.getElementById('group-nota').style.display = (estado === 'aprobada') ? 'flex' : 'none';
+    }
+
+    function guardarEstadoMateria() {
+      if (!materiaSeleccionadaActual) return;
+
+      const estado = document.getElementById('input-estado').value;
+      const nota = document.getElementById('input-nota').value;
+
+      progresoUsuario[materiaSeleccionadaActual] = {
+        estado: estado,
+        nota: estado === 'aprobada' ? nota : null
+      };
+
+      localStorage.setItem('progresoMecanicaUNLZ', JSON.stringify(progresoUsuario));
+      
+      const diaSeleccionado = document.getElementById('filter-day').value;
+      renderMalla(diaSeleccionado);
+      auditarMateria(materiaSeleccionadaActual);
     }
 
     function actualizarFiltro() {
