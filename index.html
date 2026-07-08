@@ -3,224 +3,346 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Malla Curricular - Ingeniería Mecánica UNLZ</title>
+  <title>Malla Curricular Pro - Ingeniería Mecánica UNLZ</title>
   <style>
-    /* El CSS original tuyo corregido e intacto */
-    h1 {
-      margin-bottom: 2rem;
-      color: #660000;
+    /* Variables CSS dinámicas con la paleta de tu imagen por defecto */
+    :root {
+      --bg-image: url('https://i.pinimg.com/736x/da/6b/19/da6b19742a9bf64674215b6faa5893c9.jpg'); 
+      --color-aprobada: #839958;  /* Moss Green */
+      --color-regular: #D3968C;   /* Rosy Brown */
+      --color-cursando: #105666;  /* Midnight Green */
+      --color-crema: #F7F4D5;     /* Beige */
+      --color-bloqueada: #1b3d2f; /* Verde Musgo Oscuro pero visible */
+      
+      /* Colores de texto automáticos según contraste */
+      --text-aprobada: #ffffff;
+      --text-regular: #ffffff;
+      --text-cursando: #ffffff;
+      --text-crema: #333333;
+      --text-bloqueada: #F7F4D5;  /* Texto crema brillante para leer sobre oscuro */
     }
-    h2 {
-      color: #880e0e;
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-image) no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      transition: background 0.3s ease;
     }
-    .year {
-      margin-bottom: 2.5rem;
-      border-left: 6px solid #880e0e;
-      padding-left: 1rem;
+
+    /* Capa de desenfoque grunge/aesthetic sobre el fondo */
+    .backdrop-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 51, 35, 0.75); /* Tinte verde oscuro traslúcido para legibilidad */
+      backdrop-filter: blur(2px);
+      z-index: -1;
     }
-    .malla-container {
+
+    header {
+      background: rgba(10, 51, 35, 0.85);
+      border: 1px solid rgba(247, 244, 213, 0.2);
+      color: var(--color-crema);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
       display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-    .cuatrimestre {
-      display: flex;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 1.5rem;
-      align-items: flex-start;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
-    .cuatrimestre > .cuatri-col {
-      min-width: 200px;
-      background-color: #fff0f0;
-      border: 2px solid #dcbaba;
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);
+    header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+    
+    .filter-container select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--color-aprobada);
+      background: var(--color-crema);
+      color: #0A3323;
+      font-weight: bold;
+    }
+
+    .top-widgets {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .widget-box {
+      background: rgba(255, 255, 255, 0.93);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border-top: 4px solid var(--color-cursando);
+    }
+    .widget-box h3 { margin-top: 0; color: #0A3323; font-size: 1.1rem; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem;}
+    
+    /* Calendario Semanal */
+    .calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; text-align: center; margin-top: 10px; }
+    .calendar-day {
+      background: rgba(247, 244, 213, 0.6);
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 4px;
+      font-size: 0.75rem;
+      min-height: 60px;
+    }
+    .calendar-day.active {
+      background: var(--color-cursando);
+      border-color: var(--color-cursando);
+      color: var(--text-cursando);
+      font-weight: bold;
+    }
+    .day-name { font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; }
+    .calendar-mat { font-size: 0.7rem; margin-top: 2px; background: rgba(255,255,255,0.3); border-radius: 3px; padding: 1px; }
+
+    .layout-container { display: flex; gap: 1.5rem; align-items: flex-start; margin-top: 10px; }
+    .malla-container { flex: 3; display: flex; flex-direction: column; gap: 1.5rem; }
+    .cuatrimestre { display: flex; flex-wrap: wrap; gap: 1.2rem; width: 100%; }
+    
+    .cuatri-col {
+      min-width: 290px;
+      background: rgba(10, 51, 35, 0.85);
+      border: 1px solid rgba(247, 244, 213, 0.25);
+      border-radius: 12px;
+      padding: 1.2rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
       flex: 1;
     }
     .cuatri-title {
-      color: #880e0e;
+      color: var(--color-crema);
       text-align: center;
-      font-size: 1rem;
-      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      margin-bottom: 1.2rem;
       font-weight: bold;
+      border-bottom: 1px dashed rgba(247, 244, 213, 0.3);
+      padding-bottom: 0.4rem;
     }
+    
+    /* Estilos dinámicos de tarjetas */
     .materia {
-      padding: 0.5rem;
-      border: 2px solid #dcbaba;
-      border-radius: 6px;
-      background-color: #fff;
-      margin-bottom: 0.5rem;
+      padding: 0.85rem;
+      border: 2px solid rgba(247, 244, 213, 0.1);
+      border-radius: 8px;
+      margin-bottom: 0.8rem;
       cursor: pointer;
       position: relative;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-      box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);
-      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
+      font-weight: 600;
+      user-select: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
     }
     .materia:hover {
-      border-color: #b71c1c;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      border-color: var(--color-crema);
     }
-    .cuatrimestre-title {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
-      color: #7f0c0c;
-    }
+    
+    .materia.estado-aprobada { background-color: var(--color-aprobada) !important; color: var(--text-aprobada) !important; }
+    .materia.estado-regular { background-color: var(--color-regular) !important; color: var(--text-regular) !important; }
+    .materia.estado-cursando { background-color: var(--color-cursando) !important; color: var(--text-cursando) !important; }
+    .materia.estado-crema { background-color: var(--color-crema) !important; color: var(--text-crema) !important; }
+    .materia.estado-bloqueada { background-color: var(--color-bloqueada) !important; color: var(--text-bloqueada) !important; }
 
-    /* NUEVOS ESTILOS SOLICITADOS (Adaptados perfectamente a tu paleta roja) */
-    .layout-wrapper {
-      display: flex;
-      gap: 1.5rem;
-      align-items: flex-start;
-    }
-    .malla-wrapper-principal {
-      flex: 3;
-    }
+    .materia.highlight-missing { border-color: #e74c3c !important; box-shadow: 0 0 12px #e74c3c !important; opacity: 1 !important; }
+    .materia.highlight-ok { border-color: #2ecc71 !important; box-shadow: 0 0 12px #2ecc71 !important; opacity: 1 !important; }
+    .materia.dimmed { opacity: 0.15; }
+
+    .materia-meta { display: flex; justify-content: space-between; opacity: 0.75; margin-top: 6px; font-size: 0.75rem; }
+    .nota-badge { position: absolute; top: -8px; right: -5px; background-color: #2ecc71; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+    
+    /* Paneles laterales */
     .sidebar-wrapper {
       flex: 1;
-      min-width: 300px;
+      min-width: 320px;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
       position: sticky;
       top: 20px;
     }
-    .panel-lateral {
-      background-color: #fff0f0;
-      border: 2px solid #dcbaba;
-      border-radius: 10px;
+    .sidebar-panel {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 2px solid #0A3323;
+      border-radius: 12px;
       padding: 1.2rem;
-      box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
     }
-    .panel-lateral h3 {
-      margin-top: 0;
-      color: #880e0e;
-      border-bottom: 2px solid #dcbaba;
-      padding-bottom: 0.5rem;
-    }
-    .stats-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-    .stats-table td {
-      padding: 6px 2px;
-      border-bottom: 1px solid #f3d1d1;
-    }
-    .stats-table td:last-child {
-      text-align: right;
-      font-weight: bold;
-      color: #880e0e;
-    }
-    .top-widgets-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; margin-top: 8px; }
-    .calendar-day { background: #fffdfd; border: 1px solid #dcbaba; border-radius: 6px; padding: 6px 2px; font-size: 0.75rem; min-height: 50px; }
-    .calendar-day.active { background: #ebf5fb; border-color: #3498db; color: #2980b9; font-weight: bold; }
-    .day-name { font-weight: bold; border-bottom: 1px solid #eee; margin-bottom: 2px; color: #880e0e; }
-    .calendar-mat-tag { font-size: 0.65rem; background: rgba(52, 152, 219, 0.1); border-radius: 3px; padding: 1px; margin-top: 2px; }
+    .sidebar-panel h3 { margin: 0 0 10px 0; color: #0A3323; border-bottom: 2px solid #0A3323; padding-bottom: 0.5rem; }
+    
+    /* Tabla Analítica */
+    .stats-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 5px; }
+    .stats-table td { padding: 8px 4px; border-bottom: 1px solid #eee; color: #333; }
+    .stats-table td:last-child { text-align: right; font-weight: bold; color: #105666; }
 
-    /* Lógica rigurosa de colores solicitada */
-    .materia.estado-aprobada { border-color: #2ecc71 !important; background-color: #eafeea !important; color: #27ae60; }
-    .materia.estado-regular { border-color: #f1c40f !important; background-color: #fff9d4 !important; color: #b7950b; }
-    .materia.estado-cursando { border-color: #3498db !important; background-color: #ebf5fb !important; color: #2980b9; }
-    .materia.estado-crema { border-color: #dfd49e !important; background-color: #fffdf0 !important; color: #444; }
-    .materia.estado-bloqueada { border-color: #999999 !important; background-color: #cccccc !important; color: #666; opacity: 0.6; }
-
-    .materia.highlight-missing { border-color: #e74c3c !important; background-color: #fdeaea !important; box-shadow: 0 0 8px rgba(231, 76, 60, 0.6); }
-    .materia.highlight-ok { border-color: #2ecc71 !important; background-color: #eafeea !important; box-shadow: 0 0 8px rgba(46, 204, 113, 0.6); }
-    .materia.dimmed { opacity: 0.15; }
-
-    .materia-meta { display: flex; justify-content: space-between; color: #7f8c8d; margin-top: 4px; font-size: 0.75rem; }
-    .nota-badge { position: absolute; top: -6px; right: -4px; background-color: #2ecc71; color: white; font-size: 0.7rem; padding: 1px 5px; border-radius: 8px; font-weight: bold; }
-    .form-group { margin-top: 10px; display: flex; flex-direction: column; gap: 2px; font-size: 0.85rem; }
-    .form-group select, .form-group input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
-    .checkbox-row-layout { display: flex; flex-direction: column; gap: 4px; background: white; padding: 6px; border-radius: 4px; border: 1px solid #ccc; max-height: 90px; overflow-y: auto; }
-    .req-list-style { padding-left: 15px; margin: 5px 0; font-size: 0.8rem; }
+    .form-group { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .form-group select, .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+    
+    .add-day-row { display: flex; gap: 5px; margin-top: 5px; }
+    .add-day-row select { flex-grow: 1; padding: 4px; border-radius: 4px; border: 1px solid #ccc; }
+    .btn-small { background: #105666; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+    .btn-guardar { margin-top: 12px; background-color: #880e0e; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
+    .btn-guardar:hover { background-color: #b71c1c; }
+    
+    /* Engranaje Flotante del Diseñador */
+    .design-toggle {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      background: #0A3323;
+      color: var(--color-crema);
+      border: 2px solid var(--color-crema);
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 999;
+    }
+    .design-panel {
+      position: fixed;
+      bottom: 80px; right: 20px;
+      background: white;
+      border: 2px solid #0A3323;
+      border-radius: 12px;
+      padding: 1.2rem;
+      width: 280px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 998;
+    }
+    .color-picker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; }
+    .color-picker-row input { cursor: pointer; border: none; background: transparent; width: 40px; height: 30px; }
+    
+    .instruction-tip { font-size: 0.75rem; color: var(--color-crema); background: rgba(10, 51, 35, 0.9); padding: 8px; border-radius: 6px; margin-bottom: 15px; text-align: center; }
+    .sugeridas-list { padding-left: 15px; margin: 5px 0; font-size: 0.85rem; color: #27ae60; }
+    .req-list { padding-left: 20px; margin: 8px 0; font-size: 0.85rem; }
   </style>
 </head>
 <body>
 
-  <h1>Malla Curricular - Ingeniería Mecánica UNLZ</h1>
+  <div class="backdrop-overlay"></div>
 
-  <div class="top-widgets-row">
-    <div class="cuatrimestre > cuatri-col" style="background-color: white; border: 2px solid #dcbaba; border-radius: 10px; padding: 1rem; box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);">
-      <h3 style="margin-top:0; color:#880e0e; font-size:1rem; border-bottom:1px solid #eee; padding-bottom:4px;">💡 Sugerencias para el próximo cuatrimestre</h3>
-      <ul id="lista-sugeridas" style="padding-left:15px; margin:5px 0; font-size:0.85rem; color:#27ae60; font-weight:bold;"></ul>
+  <header>
+    <h1>Malla Curricular - Ingeniería Mecánica UNLZ</h1>
+    <div class="filter-container">
+      <select id="filter-day" onchange="actualizarFiltro()">
+        <option value="todos">🔎 Todos los días</option>
+        <option value="Lunes">Lunes</option>
+        <option value="Martes">Martes</option>
+        <option value="Miércoles">Miércoles</option>
+        <option value="Jueves">Jueves</option>
+        <option value="Viernes">Viernes</option>
+        <option value="Sábado">Sábado</option>
+      </select>
     </div>
-    <div class="cuatrimestre > cuatri-col" style="background-color: white; border: 2px solid #dcbaba; border-radius: 10px; padding: 1rem; box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);">
-      <h3 style="margin-top:0; color:#880e0e; font-size:1rem; border-bottom:1px solid #eee; padding-bottom:4px;">📅 Cronograma Semanal</h3>
+  </header>
+
+  <div class="top-widgets">
+    <div class="widget-box">
+      <h3>💡 Sugerencias para cursar el próximo cuatrimestre</h3>
+      <ul id="lista-sugeridas" class="sugeridas-list"></ul>
+    </div>
+    <div class="widget-box">
+      <h3>📅 Cronograma Semanal</h3>
       <div class="calendar-grid" id="calendar"></div>
     </div>
   </div>
 
-  <div style="font-size:0.8rem; color:#666; margin-bottom:10px;">
-    💡 <strong>Uso:</strong> 1 Clic para ver correlativas | Doble Clic para editar nota/días | 3 Clics rápidos para limpiar filtros.
+  <div class="instruction-tip">
+    ⚙️ <strong>Atajos:</strong> 1 Clic para ver correlativas | Doble Clic para editar nota, estado y modificar días | 3 Clics para restablecer vista.
   </div>
 
-  <div class="layout-wrapper">
-    <div class="malla-wrapper-principal" id="malla"></div>
+  <div class="layout-container">
+    <div class="malla-container" id="malla"></div>
 
     <div class="sidebar-wrapper">
-      <div class="panel-lateral">
+      <div class="sidebar-panel">
         <h3>📊 Resumen de Avance</h3>
         <table class="stats-table">
-          <tr><td>Horas logradas:</td><td id="stat-horas">0 hs</td></tr>
+          <tr><td>Horas de cursada logradas:</td><td id="stat-horas">0 hs</td></tr>
           <tr><td>Materias Regulares:</td><td id="stat-regulares">0</td></tr>
           <tr><td>Materias Aprobadas:</td><td id="stat-aprobadas">0</td></tr>
-          <tr><td>Porcentaje Carrera:</td><td id="stat-porcentaje">0%</td></tr>
+          <tr><td>Avance de la carrera:</td><td id="stat-porcentaje">0%</td></tr>
           <tr><td style="color:#880e0e; font-weight:bold;">Promedio General:</td><td id="stat-promedio" style="color:#880e0e;">0.00</td></tr>
         </table>
       </div>
 
-      <div class="panel-lateral">
+      <div class="sidebar-panel">
         <h3>Panel de Gestión</h3>
-        <div id="sidebar-default"><p style="font-size:0.85rem; margin:0;">Haz doble clic en una materia para editar.</p></div>
+        <div id="sidebar-default">
+          <p>Haz doble clic sobre una materia para calificarla o cambiar su condición.</p>
+        </div>
+        
         <div id="sidebar-content" style="display: none;">
-          <h4 id="info-nombre" style="color:#880e0e; margin:0 0 6px 0; font-size:0.95rem;"></h4>
-          <p style="margin:2px 0; font-size:0.8rem;">Horas: <span id="info-horas"></span> | <span id="info-turnos"></span></p>
+          <h4 id="info-nombre" style="color: #0A3323; margin: 0 0 8px 0; font-size: 1.1rem;"></h4>
+          <p style="margin: 3px 0; font-size:0.85rem;"><strong>Horas:</strong> <span id="info-horas"></span> | <span id="info-turnos"></span></p>
+          <p style="margin: 3px 0; font-size:0.85rem;"><strong>Días Vigentes:</strong> <span id="info-dias"></span></p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 12px 0;">
           
           <div class="form-group">
-            <label>Condición:</label>
+            <label for="input-estado"><strong>Condición Académica:</strong></label>
             <select id="input-estado" onchange="toggleFormulariosDinamicos()">
               <option value="pendiente">Pendiente</option>
               <option value="cursando">Cursando actualmente</option>
               <option value="regular">Regular (Adeuda final)</option>
-              <option value="aprobada">Aprobada (Finalizada)</option>
+              <option value="aprobada">Aprobada (Final/Promoción)</option>
             </select>
           </div>
-          <div class="form-group" id="group-nota" style="display:none;">
-            <label>Nota Final:</label>
-            <input type="number" id="input-nota" min="4" max="10">
+          <div class="form-group" id="group-nota" style="display: none;">
+            <label for="input-nota"><strong>Nota Final:</strong></label>
+            <input type="number" id="input-nota" min="4" max="10" placeholder="Ej: 8">
           </div>
+          
           <div class="form-group" id="group-dias-elegidos">
-            <label>Días de asistencia:</label>
-            <div id="checkbox-container" class="checkbox-row-layout"></div>
+            <label><strong>Administrar Días de Cursada:</strong></label>
+            <div id="checkbox-container" style="display:flex; flex-direction:column; gap:5px; background:#f9f9f9; padding:8px; border-radius:6px;"></div>
             <div class="add-day-row">
               <select id="select-nuevo-dia">
-                <option value="Lunes">Lunes</option><option value="Martes">Martes</option><option value="Miércoles">Miércoles</option>
-                <option value="Jueves">Jueves</option><option value="Viernes">Viernes</option><option value="Sábado">Sábado</option>
+                <option value="Lunes">Lunes</option>
+                <option value="Martes">Martes</option>
+                <option value="Miércoles">Miércoles</option>
+                <option value="Jueves">Jueves</option>
+                <option value="Viernes">Viernes</option>
+                <option value="Sábado">Sábado</option>
               </select>
-              <button class="btn-small" onclick="agregarNuevoDiaAMateria()">➕</button>
+              <button class="btn-small" onclick="agregarNuevoDiaAMateria()">➕ Agregar</button>
             </div>
           </div>
-          <button class="btn-guardar" onclick="guardarEstadoMateria()">Guardar</button>
-          <div style="margin-top:10px; font-size:0.8rem;">
+
+          <button class="btn-guardar" onclick="guardarEstadoMateria()">Guardar Historial</button>
+          <div style="margin-top: 15px;">
             <strong>Correlativas necesarias:</strong>
-            <ul class="req-list-style" id="info-correlativas"></ul>
+            <ul class="req-list" id="info-correlativas"></ul>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <button class="design-toggle" onclick="toggleDesignPanel()">⚙️</button>
+  <div class="design-panel" id="design-panel">
+    <h4 style="margin:0 0 10px 0; color:#0A3323; border-bottom:1px solid #ddd; padding-bottom:5px;">🎨 Diseñador Temático</h4>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label style="font-size:0.8rem; font-weight:bold;">URL Enlace de Fondo (.jpg / .png):</label>
+      <input type="text" id="design-bg-url" placeholder="Pegar enlace de fondo..." onchange="cambiarFondoPantalla(this.value)">
+    </div>
+    <div class="color-picker-row"><span>Aprobada</span><input type="color" id="p-aprobada" onchange="cambiarVariableCSS('--color-aprobada', this.value)"></div>
+    <div class="color-picker-row"><span>Regular</span><input type="color" id="p-regular" onchange="cambiarVariableCSS('--color-regular', this.value)"></div>
+    <div class="color-picker-row"><span>Cursando</span><input type="color" id="p-cursando" onchange="cambiarVariableCSS('--color-cursando', this.value)"></div>
+    <div class="color-picker-row"><span>Habilitada</span><input type="color" id="p-crema" onchange="cambiarVariableCSS('--color-crema', this.value)"></div>
+    <div class="color-picker-row"><span>Bloqueada</span><input type="color" id="p-bloqueada" onchange="cambiarVariableCSS('--color-bloqueada', this.value)"></div>
+    <button class="btn-guardar" style="font-size:0.8rem; padding:5px;" onclick="restablecerDisenoOriginal()">Resetear Malla</button>
+  </div>
+
   <script>
-    // Tu base de datos oficial cargada con toda tu info horaria de UNLZ
     const materiasPorDefecto = {
       'Medios de representación gráfica I': { req: [], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde/Noche' },
       'Taller de informática general y aplicada': { req: [], dias: ['Martes'], horas: '32 hs', turno: 'Tarde/Noche' },
@@ -288,6 +410,7 @@
 
     let datosMaterias = JSON.parse(localStorage.getItem('datosMateriasMecanicaUNLZ')) || materiasPorDefecto;
     let progresoUsuario = JSON.parse(localStorage.getItem('progresoMecanicaUNLZ_V3')) || {};
+    let disenoPersonalizado = JSON.parse(localStorage.getItem('disenoMallaMecanica_V2')) || {};
     let mSeleccionada = "";
 
     function verificarHabilitacion(nombreMateria) {
@@ -302,7 +425,7 @@
       });
     }
 
-    function renderMalla() {
+    function renderMalla(diaFiltrado = 'todos') {
       const cont = document.getElementById('malla');
       if(!cont) return;
       cont.innerHTML = '';
@@ -316,17 +439,11 @@
       let cantidadMateriasConNota = 0;
       const totalMateriasPlan = Object.keys(datosMaterias).length;
 
-      estructura.forEach((anual, añoIdx) => {
-        const divAño = document.createElement('div');
-        divAño.className = 'year';
-        const tituloAño = document.createElement('h2');
-        tituloAño.textContent = `${añoIdx + 1}° Año`;
-        divAño.appendChild(tituloAño);
+      estructura.forEach((año, añoIdx) => {
+        const fila = document.createElement('div');
+        fila.className = 'cuatrimestre';
 
-        const divFilaCuatris = document.createElement('div');
-        divFilaCuatris.className = 'cuatrimestre';
-
-        anual.forEach((col, colIdx) => {
+        año.forEach((col, colIdx) => {
           const columna = document.createElement('div');
           columna.className = 'cuatri-col';
           const numCuatri = (añoIdx * 2) + (colIdx + 1);
@@ -335,6 +452,8 @@
           titulo.className = 'cuatri-title';
           titulo.textContent = `${numCuatri}° Cuatrimestre`;
           columna.appendChild(titulo);
+
+          let visibles = 0;
 
           col.forEach(materia => {
             const infoMat = datosMaterias[materia];
@@ -351,7 +470,7 @@
               acumuladorHoras += intHoras;
               if (historial.nota) {
                 sumatoriaNotas += parseFloat(historial.nota);
-                document.getElementById('stat-promedio').innerText = (sumatoriaNotas / ++cantidadMateriasConNota).toFixed(2);
+                cantidadMateriasConNota++;
               }
             } else if (historial.estado === 'regular') {
               contadorRegulares++;
@@ -360,10 +479,13 @@
               const diasACursar = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos : infoMat.dias;
               diasACursar.forEach(d => {
                 if (!diasOcupados[d]) diasOcupados[d] = [];
-                diasOcupados[d].push(materia.substring(0, 12) + ".");
+                diasOcupados[d].push(materia.substring(0, 14) + ".");
               });
             }
 
+            if (diaFiltrado !== 'todos' && !infoMat.dias.includes(diaFiltrado)) return;
+
+            visibles++;
             const divMateria = document.createElement('div');
             divMateria.className = 'materia';
             divMateria.setAttribute('data-materia', materia);
@@ -399,18 +521,20 @@
             columna.appendChild(divMateria);
           });
 
-          divFilaCuatris.appendChild(columna);
+          if (visibles > 0) fila.appendChild(columna);
         });
 
-        divAño.appendChild(divFilaCuatris);
-        cont.appendChild(divAño);
+        if (fila.children.length > 0) cont.appendChild(fila);
       });
+
+      const porcentajeAvance = totalMateriasPlan > 0 ? ((contadorAprobadas / totalMateriasPlan) * 100).toFixed(1) : 0;
+      const promedioFinal = cantidadMateriasConNota > 0 ? (sumatoriaNotas / cantidadMateriasConNota).toFixed(2) : "0.00";
 
       document.getElementById('stat-horas').innerText = `${acumuladorHoras} hs`;
       document.getElementById('stat-regulares').innerText = contadorRegulares;
       document.getElementById('stat-aprobadas').innerText = contadorAprobadas;
-      document.getElementById('stat-porcentaje').innerText = `${((contadorAprobadas / totalMateriasPlan) * 100).toFixed(1)}%`;
-      if(cantidadMateriasConNota === 0) document.getElementById('stat-promedio').innerText = "0.00";
+      document.getElementById('stat-porcentaje').innerText = `${porcentajeAvance}%`;
+      document.getElementById('stat-promedio').innerText = promedioFinal;
 
       renderWidgets(sugeridas, diasOcupados);
     }
@@ -429,7 +553,7 @@
           return `
             <div class="calendar-day ${mats.length ? 'active' : ''}">
               <div class="day-name">${d}</div>
-              <div>${mats.length ? mats.map(m => `<div class="calendar-mat-tag">${m}</div>`).join('') : '<span style="opacity:0.3;">-</span>'}</div>
+              <div>${mats.length ? mats.map(m => `<div class="calendar-mat">${m}</div>`).join('') : '<span style="opacity:0.4;">-</span>'}</div>
             </div>
           `;
         }).join('');
@@ -475,14 +599,17 @@
       document.getElementById('input-estado').value = historial.estado;
       document.getElementById('input-nota').value = historial.nota || '';
 
+      renderCheckboxesDias(info, historial);
+      toggleFormulariosDinamicos();
+      auditarMateria(nombreMateria);
+    }
+
+    function renderCheckboxesDias(info, historial) {
       const checkCont = document.getElementById('checkbox-container');
       checkCont.innerHTML = info.dias.map(d => {
         const checked = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos.includes(d) : true;
-        return `<label style="display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox" name="elegir-dia" value="${d}" ${checked ? 'checked' : ''}> ${d}</label>`;
+        return `<label><input type="checkbox" name="elegir-dia" value="${d}" ${checked ? 'checked' : ''}> ${d}</label>`;
       }).join('');
-
-      toggleFormulariosDinamicos();
-      auditarMateria(nombreMateria);
     }
 
     function agregarNuevoDiaAMateria() {
@@ -495,7 +622,7 @@
         
         document.getElementById('info-dias').innerText = datosMaterias[mSeleccionada].dias.join(', ');
         const historial = progresoUsuario[mSeleccionada] || { estado: 'pendiente', nota: '', diasElegidos: [] };
-        abrirGestionMateria(mSeleccionada);
+        renderCheckboxesDias(datosMaterias[mSeleccionada], historial);
       }
     }
 
@@ -523,11 +650,60 @@
       progresoUsuario[mSeleccionada] = { estado: estado, nota: estado === 'aprobada' ? nota : null, diasElegidos: diasElegidos };
       localStorage.setItem('progresoMecanicaUNLZ_V3', JSON.stringify(progresoUsuario));
       
-      renderMalla();
+      renderMalla(document.getElementById('filter-day').value);
       restaurarVistaGeneral();
     }
 
-    window.onload = () => { renderMalla(); };
+    function actualizarFiltro() {
+      renderMalla(document.getElementById('filter-day').value);
+    }
+
+    function toggleDesignPanel() {
+      const panel = document.getElementById('design-panel');
+      panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // Funciones del diseñador optimizadas
+    function cambiarVariableCSS(propiedad, valor) {
+      document.documentElement.style.setProperty(propiedad, valor);
+      disenoPersonalizado[propiedad] = valor;
+      localStorage.setItem('disenoMallaMecanica_V2', JSON.stringify(disenoPersonalizado));
+    }
+
+    function cambiarFondoPantalla(url) {
+      if(!url) return;
+      document.body.style.backgroundImage = `url('${url}')`;
+      disenoPersonalizado['--bg-image'] = url;
+      localStorage.setItem('disenoMallaMecanica_V2', JSON.stringify(disenoPersonalizado));
+    }
+
+    function cargarDisenoGuardado() {
+      if (disenoPersonalizado['--bg-image']) {
+        document.body.style.backgroundImage = `url('${disenoPersonalizado['--bg-image']}')`;
+        document.getElementById('design-bg-url').value = disenoPersonalizado['--bg-image'];
+      }
+      const propiedades = ['--color-aprobada', '--color-regular', '--color-cursando', '--color-crema', '--color-bloqueada'];
+      propiedades.forEach(p => {
+        if (disenoPersonalizado[p]) {
+          document.documentElement.style.setProperty(p, disenoPersonalizado[p]);
+          const inputId = p.replace('--color-', 'p-');
+          const element = document.getElementById(inputId);
+          if (element) element.value = disenoPersonalizado[p];
+        }
+      });
+    }
+
+    function restablecerDisenoOriginal() {
+      localStorage.removeItem('disenoMallaMecanica_V2');
+      localStorage.removeItem('datosMateriasMecanicaUNLZ');
+      disenoPersonalizado = {};
+      location.reload();
+    }
+
+    window.onload = () => { 
+      cargarDisenoGuardado();
+      renderMalla(); 
+    };
   </script>
 </body>
 </html>
