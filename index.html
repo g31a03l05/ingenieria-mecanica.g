@@ -1,14 +1,22 @@
 Giuli<3
-<!DOCTYPE html>
+
+   <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Malla Curricular - Ingeniería Mecánica UNLZ</title>
+  <title>Malla Curricular Pro - Ingeniería Mecánica UNLZ</title>
   <style>
+    :root {
+      --color-aprobada: #2ecc71;
+      --color-regular: #f1c40f;
+      --color-cursando: #3498db;
+      --color-disponible: #fffdf2; /* Blanco Crema */
+      --color-bloqueada: #e2e2e2;
+    }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #fcf8f8;
+      background-color: #f5f6fa;
       margin: 0;
       padding: 20px;
       color: #333;
@@ -18,7 +26,7 @@ Giuli<3
       color: white;
       padding: 20px;
       border-radius: 10px;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -26,167 +34,132 @@ Giuli<3
       gap: 1rem;
       box-shadow: 0 4px 10px rgba(136, 14, 14, 0.2);
     }
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
+    header h1 { margin: 0; font-size: 1.8rem; }
+    
+    .top-widgets {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
     }
-    .filter-container {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 8px 15px;
-      border-radius: 6px;
+    .widget-box {
+      background: white;
+      border-radius: 10px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      border-top: 4px solid #880e0e;
     }
-    .filter-container select {
-      padding: 6px 10px;
+    .widget-box h3 { margin-top: 0; color: #880e0e; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;}
+    
+    /* Calendario Semanal */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .calendar-day {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
       border-radius: 4px;
-      border: none;
-      font-weight: bold;
-      color: #880e0e;
-      cursor: pointer;
+      padding: 8px 4px;
+      font-size: 0.75rem;
+      min-height: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
+    .calendar-day.active {
+      background: #ebf5fb;
+      border-color: var(--color-cursando);
+      color: #2980b9;
+      font-weight: bold;
+    }
+    .day-name { font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 4px; color: #555; }
+
     .layout-container {
       display: flex;
-      gap: 2rem;
+      gap: 1.5rem;
       align-items: flex-start;
     }
     .malla-container {
       flex: 3;
       display: flex;
       flex-direction: column;
-      gap: 2rem;
-      width: 100%;
-    }
-    .cuatrimestre {
-      display: flex;
-      flex-wrap: wrap;
       gap: 1.5rem;
     }
+    .cuatrimestre { display: flex; flex-wrap: wrap; gap: 1.2rem; }
     .cuatri-col {
-      min-width: 280px;
+      min-width: 290px;
       background-color: #fff0f0;
       border: 2px solid #dcbaba;
       border-radius: 10px;
-      padding: 1.2rem;
-      box-shadow: 2px 2px 8px rgba(160, 0, 0, 0.05);
+      padding: 1rem;
+      box-shadow: 2px 2px 8px rgba(160, 0, 0, 0.03);
       flex: 1;
     }
     .cuatri-title {
       color: #880e0e;
       text-align: center;
-      font-size: 1.05rem;
-      margin-bottom: 1.2rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
       font-weight: bold;
       border-bottom: 2px dashed #dcbaba;
-      padding-bottom: 0.5rem;
+      padding-bottom: 0.4rem;
     }
+    
+    /* Tarjetas de Materia */
     .materia {
       padding: 0.8rem;
-      border: 2px solid #dcbaba;
+      border: 2px solid #ccc;
       border-radius: 6px;
-      background-color: #fff;
       margin-bottom: 0.7rem;
       cursor: pointer;
       position: relative;
-      transition: all 0.25s ease;
-      box-shadow: 2px 2px 5px rgba(160, 0, 0, 0.05);
-      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
       font-weight: 500;
+      user-select: none;
     }
     .materia:hover {
-      border-color: #b71c1c;
       transform: translateY(-2px);
-      box-shadow: 2px 4px 8px rgba(160, 0, 0, 0.15);
-    }
-    .materia-meta {
-      display: flex;
-      justify-content: space-between;
-      color: #7f8c8d;
-      margin-top: 6px;
-      font-size: 0.75rem;
-    }
-    .nota-badge {
-      position: absolute;
-      top: -8px;
-      right: -5px;
-      background-color: #27ae60;
-      color: white;
-      font-size: 0.75rem;
-      padding: 2px 6px;
-      border-radius: 10px;
-      font-weight: bold;
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     
-    /* Estados de las materias */
-    .materia.estado-aprobada {
-      border-color: #2ecc71 !important;
-      background-color: #eafeea !important;
-    }
-    .materia.estado-regular {
-      border-color: #f1c40f !important;
-      background-color: #fef9e7 !important;
-    }
-    .materia.estado-cursando {
-      border-color: #3498db !important;
-      background-color: #ebf5fb !important;
-    }
+    /* Sistema de colores base solicitado */
+    .materia.estado-aprobada { border-color: var(--color-aprobada) !important; background-color: #eafeea !important; }
+    .materia.estado-regular { border-color: var(--color-regular) !important; background-color: #fef9e7 !important; }
+    .materia.estado-cursando { border-color: var(--color-cursando) !important; background-color: #ebf5fb !important; }
+    .materia.estado-disponible { border-color: #bfa37a !important; background-color: var(--color-disponible) !important; }
+    .materia.estado-bloqueada { border-color: #bdc3c7 !important; background-color: var(--color-bloqueada) !important; color: #7f8c8d; }
 
-    /* Modificadores de auditoría visual */
-    .materia.highlight-missing {
-      border-color: #e74c3c !important;
-      background-color: #fdeaea !important;
-      box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
-    }
-    .materia.dimmed {
-      opacity: 0.25;
-    }
+    /* Efectos dinámicos por clicks */
+    .materia.highlight-missing { border-color: #e74c3c !important; background-color: #fdeaea !important; box-shadow: 0 0 8px rgba(231, 76, 60, 0.6); color: #333; }
+    .materia.highlight-ok { border-color: var(--color-aprobada) !important; background-color: #eafeea !important; box-shadow: 0 0 8px rgba(46, 204, 113, 0.6); color: #333; }
+    .materia.dimmed { opacity: 0.15; }
 
-    /* Panel Lateral */
+    .materia-meta { display: flex; justify-content: space-between; color: #7f8c8d; margin-top: 6px; font-size: 0.75rem; }
+    .nota-badge { position: absolute; top: -8px; right: -5px; background-color: var(--color-aprobada); color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+    
     .sidebar-panel {
       flex: 1;
-      min-width: 300px;
+      min-width: 320px;
       background: white;
       border: 2px solid #880e0e;
       border-radius: 10px;
-      padding: 1.5rem;
+      padding: 1.2rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       position: sticky;
       top: 20px;
     }
-    .sidebar-panel h3 {
-      margin-top: 0;
-      color: #880e0e;
-      border-bottom: 2px solid #880e0e;
-      padding-bottom: 0.5rem;
-    }
-    .form-group {
-      margin-top: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .form-group select, .form-group input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .btn-guardar {
-      margin-top: 15px;
-      background-color: #880e0e;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-guardar:hover {
-      background-color: #b71c1c;
-    }
-    .req-list {
-      padding-left: 20px;
-      margin: 10px 0;
-    }
+    .form-group { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .form-group select, .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    .btn-guardar { margin-top: 12px; background-color: #880e0e; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
+    .btn-guardar:hover { background-color: #b71c1c; }
+    .req-list { padding-left: 20px; margin: 8px 0; font-size: 0.85rem; }
+    .sugeridas-list { padding-left: 15px; margin: 5px 0; font-size: 0.85rem; color: #27ae60; font-weight: bold; }
+    .instruction-tip { font-size: 0.75rem; color: #7f8c8d; background: #eee; padding: 6px; border-radius: 4px; margin-bottom: 10px; text-align: center; }
   </style>
 </head>
 <body>
@@ -194,7 +167,7 @@ Giuli<3
   <header>
     <h1>Malla Curricular - Ingeniería Mecánica UNLZ</h1>
     <div class="filter-container">
-      <label for="filter-day">Filtrar por Día de Cursada: </label>
+      <label for="filter-day">Filtrar Cursada: </label>
       <select id="filter-day" onchange="actualizarFiltro()">
         <option value="todos">Todos los días</option>
         <option value="Lunes">Lunes</option>
@@ -207,24 +180,42 @@ Giuli<3
     </div>
   </header>
 
+  <div class="top-widgets">
+    <!-- Sugeridor inteligente -->
+    <div class="widget-box">
+      <h3>💡 Materias Sugeridas para el Próximo Cuatrimestre</h3>
+      <ul id="lista-sugeridas" class="sugeridas-list"></ul>
+    </div>
+
+    <!-- Calendario de colisiones -->
+    <div class="widget-box">
+      <h3>📅 Horarios Ocupados (Cursando Actual)</h3>
+      <div class="calendar-grid" id="calendar"></div>
+    </div>
+  </div>
+
+  <div class="instruction-tip">
+    💡 <strong>Instrucciones:</strong> 1 Clic para auditar correlativas | Doble Clic para gestionar estado y nota | 3 Clics rápidos para restaurar vista general.
+  </div>
+
   <div class="layout-container">
     <div class="malla-container" id="malla"></div>
 
     <aside class="sidebar-panel">
-      <h3>Gestión de Materia</h3>
+      <h3>Panel de Gestión</h3>
       <div id="sidebar-default">
-        <p>Haz clic sobre cualquier materia para auditar correlativas, asignar tu nota o marcar si adeudas el examen final.</p>
+        <p>Selecciona una materia mediante clicks para interactuar con ella.</p>
       </div>
       
       <div id="sidebar-content" style="display: none;">
-        <h4 id="info-nombre" style="color: #880e0e; margin-bottom: 8px;"></h4>
-        <p style="margin: 3px 0;"><strong>Horas:</strong> <span id="info-horas"></span> | <span id="info-turnos"></span></p>
-        <p style="margin: 3px 0;"><strong>Cursada:</strong> <span id="info-dias"></span></p>
+        <h4 id="info-nombre" style="color: #880e0e; margin: 0 0 8px 0;"></h4>
+        <p style="margin: 3px 0; font-size:0.85rem;"><strong>Horas:</strong> <span id="info-horas"></span> | <span id="info-turnos"></span></p>
+        <p style="margin: 3px 0; font-size:0.85rem;"><strong>Cursada:</strong> <span id="info-dias"></span></p>
         
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 12px 0;">
         
         <div class="form-group">
-          <label for="input-estado"><strong>Tu Condición Académica:</strong></label>
+          <label for="input-estado"><strong>Condición Académica:</strong></label>
           <select id="input-estado" onchange="toggleInputNota()">
             <option value="pendiente">Pendiente</option>
             <option value="cursando">Cursando actualmente</option>
@@ -240,8 +231,8 @@ Giuli<3
 
         <button class="btn-guardar" onclick="guardarEstadoMateria()">Guardar Historial</button>
 
-        <div style="margin-top: 20px;">
-          <strong>Estado de Correlativas necesarias:</strong>
+        <div style="margin-top: 15px;">
+          <strong>Estado de Requisitos:</strong>
           <ul class="req-list" id="info-correlativas"></ul>
         </div>
       </div>
@@ -250,60 +241,50 @@ Giuli<3
 
   <script>
     const datosMaterias = {
-      // 1° Cuatrimestre
-      'Medios de representación gráfica I': { req: [], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde y Noche' },
-      'Taller de informática general y aplicada': { req: [], dias: ['Martes'], horas: '32 hs', turno: 'Tarde y Noche' },
-      'Introduccion a la ingenieria': { req: [], dias: ['Miércoles'], horas: '64 hs', turno: 'Tarde y Noche' },
-      'Inglés': { req: [], dias: ['Viernes'], horas: '64 hs', turno: 'Tarde y Noche' },
-      // 2° Cuatrimestre
-      'Medios de representación gráfica II': { req: ['Medios de representación gráfica I'], dias: ['Lunes', 'Viernes'], horas: '128 hs', turno: 'Tarde y Noche' },
-      'Fundamentos de programación informática': { req: ['Taller de informática general y aplicada'], dias: ['Martes'], horas: '64 hs', turno: 'Tarde y Noche' },
+      'Medios de representación gráfica I': { req: [], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Taller de informática general y aplicada': { req: [], dias: ['Martes'], horas: '32 hs', turno: 'Tarde/Noche' },
+      'Introduccion a la ingenieria': { req: [], dias: ['Miércoles'], horas: '64 hs', turno: 'Tarde/Noche' },
+      'Inglés': { req: [], dias: ['Viernes'], horas: '64 hs', turno: 'Tarde/Noche' },
+      'Medios de representación gráfica II': { req: ['Medios de representación gráfica I'], dias: ['Lunes', 'Viernes'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Fundamentos de programación informática': { req: ['Taller de informática general y aplicada'], dias: ['Martes'], horas: '64 hs', turno: 'Tarde/Noche' },
       'Higiene y seguridad en el trabajo I': { req: ['Introduccion a la ingenieria'], dias: ['Jueves'], horas: '32 hs', turno: 'Noche' },
-      'Introducción a la gestión del medio ambiente': { req: ['Introduccion a la ingenieria'], dias: ['Martes', 'Jueves'], horas: '32 hs', turno: 'Tarde y Noche' },
+      'Introducción a la gestión del medio ambiente': { req: ['Introduccion a la ingenieria'], dias: ['Martes', 'Jueves'], horas: '32 hs', turno: 'Tarde/Noche' },
       'Economía I': { req: ['Introduccion a la ingenieria'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
-      // 3° Cuatrimestre
-      'Gestión de la calidad': { req: ['Economía I'], dias: ['Lunes', 'Martes'], horas: '32 hs', turno: 'Tarde y Noche' },
-      'Matemática I': { req: ['Introduccion a la ingenieria'], dias: ['Martes', 'Viernes'], horas: '128 hs', turno: 'Tarde y Noche' },
-      'Introducción a la gestión de la innovación y la tecnología': { req: ['Inglés'], dias: ['Miércoles'], horas: '32 hs', turno: 'Tarde y Noche' },
+      'Gestión de la calidad': { req: ['Economía I'], dias: ['Lunes', 'Martes'], horas: '32 hs', turno: 'Tarde/Noche' },
+      'Matemática I': { req: ['Introduccion a la ingenieria'], dias: ['Martes', 'Viernes'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Introducción a la gestión de la innovación y la tecnología': { req: ['Inglés'], dias: ['Miércoles'], horas: '32 hs', turno: 'Tarde/Noche' },
       'Economía II': { req: ['Economía I'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
-      'Legislación y ejercicio profesional': { req: ['Higiene y seguridad en el trabajo I'], dias: ['Jueves'], horas: '64 hs', turno: 'Tarde y Noche' },
+      'Legislación y ejercicio profesional': { req: ['Higiene y seguridad en el trabajo I'], dias: ['Jueves'], horas: '64 hs', turno: 'Tarde/Noche' },
       'Metrología': { req: ['Medios de representación gráfica II'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
-      // 4° Cuatrimestre
-      'Matemática II': { req: ['Matemática I'], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde y Noche' },
+      'Matemática II': { req: ['Matemática I'], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde/Noche' },
       'Organizacion y gestion industrial': { req: ['Gestión de la calidad','Economía II'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
-      'Física I': { req: ['Matemática I'], dias: ['Miércoles', 'Viernes'], horas: '128 hs', turno: 'Tarde y Noche' },
+      'Física I': { req: ['Matemática I'], dias: ['Miércoles', 'Viernes'], horas: '128 hs', turno: 'Tarde/Noche' },
       'Fundamentos de la química': { req: ['Introducción a la gestión del medio ambiente'], dias: ['Martes', 'Sábado'], horas: '64 hs', turno: 'Mañana/Tarde/Noche' },
-      // 5° Cuatrimestre
       'Termodinámica': { req: ['Física I','Fundamentos de la química'], dias: ['Lunes', 'Sábado'], horas: '128 hs', turno: 'Noche/Mañana' },
       'Física II': { req: ['Física I'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
-      'Cálculo I': { req: ['Matemática II'], dias: ['Miércoles', 'Viernes'], horas: '128 hs', turno: 'Tarde y Noche' },
+      'Cálculo I': { req: ['Matemática II'], dias: ['Miércoles', 'Viernes'], horas: '128 hs', turno: 'Tarde/Noche' },
       'Probabilidad y estadística': { req: ['Matemática I'], dias: ['Jueves'], horas: '64 hs', turno: 'Noche' },
-      // 6° Cuatrimestre
       'Estática': { req: ['Física I','Medios de representación gráfica II'], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Noche' },
       'Higiene y seguridad en el trabajo II': { req: ['Medios de representación gráfica II','Física II'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
       'Cálculo II': { req: ['Cálculo I'], dias: ['Martes', 'Viernes'], horas: '128 hs', turno: 'Noche' },
       'Mecánica teórica': { req: ['Cálculo I'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
       'Fundamentos de electrónica': { req: ['Fundamentos de programación informática','Física II'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
-      // 7° Cuatrimestre
       'Formulacion gestion y evaluacion de proyectos': { req: ['Organizacion y gestion industrial','Cálculo I'], dias: ['Lunes'], horas: '64 hs', turno: 'Noche' },
       'Ciencia y tecnología de los materiales': { req: ['Estática','Fundamentos de la química'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
       'Sistema y tecnología para la gestión ambiental': { req: ['Fundamentos de la química','Higiene y seguridad en el trabajo II'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
       'Mecanismos': { req: ['Mecánica teórica'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
       'Electrotecnia': { req: ['Física II'], dias: ['Jueves', 'Sábado'], horas: '128 hs', turno: 'Noche/Mañana' },
       'Mecánicas de los materiales': { req: ['Estática'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
-      // 8° Cuatrimestre
       'Modelado y dinámica de sistemas físicos': { req: ['Mecánicas de los materiales','Cálculo II'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
       'Tecnología mecánica': { req: ['Mecánicas de los materiales'], dias: ['Miércoles'], horas: '64 hs', turno: 'Noche' },
       'Máquinas e instalaciones eléctricas': { req: ['Electrotecnia'], dias: ['Jueves'], horas: '64 hs', turno: 'Noche' },
       'Mecánica de los fluidos': { req: ['Termodinámica'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
       'Tecnologia del calor': { req: ['Termodinámica'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
-      // 9° Cuatrimestre
       'Diseño de componentes de máquinas': { req: ['Probabilidad y estadística','Tecnología mecánica','Modelado y dinámica de sistemas físicos','Metrología'], dias: ['Lunes', 'Jueves'], horas: '96 hs', turno: 'Noche' },
       'Instalaciones industriales y mecánicas de almacenaje': { req: ['Mecánica de los fluidos'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
       'Automatización industrial': { req: ['Mecánica de los fluidos','Electrotecnia'], dias: ['Miércoles'], horas: '64 hs', turno: 'Noche' },
       'Vigilancia tecnológica e inteligencia competitiva': { req: ['Introducción a la gestión de la innovación y la tecnología','Legislación y ejercicio profesional','Tecnología mecánica'], dias: ['Jueves'], horas: '32 hs', turno: 'Noche' },
       'Maquinas termicas': { req: ['Tecnologia del calor'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
-      // 10° Cuatrimestre
       'Proyecto en ingeniería mecánica': { req: ['Automatización industrial','Formulacion gestion y evaluacion de proyectos','Maquinas termicas','Vigilancia tecnológica e inteligencia competitiva','Instalaciones industriales y mecánicas de almacenaje'], dias: ['Lunes', 'Miércoles'], horas: '96 hs', turno: 'Noche' },
       'Tecnología de la soldadura': { req: ['Ciencia y tecnología de los materiales'], dias: ['Martes'], horas: '32 hs', turno: 'Noche' },
       'Gestion e ingenieria del mantenimiento': { req: ['Máquinas e instalaciones eléctricas','Maquinas termicas','Diseño de componentes de máquinas'], dias: ['Jueves'], horas: '64 hs', turno: 'Noche' },
@@ -324,12 +305,25 @@ Giuli<3
        ["Proyecto en ingeniería mecánica", "Tecnología de la soldadura", "Gestion e ingenieria del mantenimiento", "Tecnologia del frio", "Sistema de control"]]
     ];
 
-    let progresoUsuario = JSON.parse(localStorage.getItem('progresoMecanicaUNLZ')) || {};
+    let progresoUsuario = JSON.parse(localStorage.getItem('progresoMecanicaUNLZ_V2')) || {};
     let materiaSeleccionadaActual = "";
+
+    function verificarHabilitacion(nombreMateria) {
+      const info = datosMaterias[nombreMateria];
+      if (!info || (progresoUsuario[nombreMateria] && progresoUsuario[nombreMateria].estado === 'aprobada')) return false;
+      if (info.req.length === 0) return true;
+      return info.req.every(reqNombre => {
+        const mReq = progresoUsuario[reqNombre];
+        return mReq && (mReq.estado === 'aprobada' || mReq.estado === 'regular');
+      });
+    }
 
     function renderMalla(diaFiltrado = 'todos') {
       const cont = document.getElementById('malla');
       cont.innerHTML = '';
+
+      let sugeridas = [];
+      let diasOcupados = {};
 
       estructura.forEach((año, añoIdx) => {
         const fila = document.createElement('div');
@@ -349,22 +343,32 @@ Giuli<3
 
           col.forEach(materia => {
             const infoMat = datosMaterias[materia];
-            if (!infoMat || (diaFiltrado !== 'todos' && !infoMat.dias.includes(diaFiltrado))) return;
+            if (!infoMat) return;
+
+            const historial = progresoUsuario[materia] || { estado: 'pendiente' };
+            const esHabilitada = verificarHabilitacion(materia);
+
+            if (esHabilitada) sugeridas.push(materia);
+            if (historial.estado === 'cursando') {
+              infoMat.dias.forEach(d => diasOcupados[d] = (diasOcupados[d] ? diasOcupados[d] + " / " : "") + materia.substring(0,12) + "..");
+            }
+
+            if (diaFiltrado !== 'todos' && !infoMat.dias.includes(diaFiltrado)) return;
 
             visibles++;
             const divMateria = document.createElement('div');
             divMateria.className = 'materia';
             divMateria.setAttribute('data-materia', materia);
             
-            const historial = progresoUsuario[materia];
-            if (historial) {
-              if (historial.estado === 'aprobada') divMateria.classList.add('estado-aprobada');
-              if (historial.estado === 'regular') divMateria.classList.add('estado-regular');
-              if (historial.estado === 'cursando') divMateria.classList.add('estado-cursando');
-              
-              if (historial.estado === 'aprobada' && historial.nota) {
-                divMateria.innerHTML += `<span class="nota-badge">${historial.nota}</span>`;
-              }
+            // Inyectar clase de color base solicitado
+            if (historial.estado === 'aprobada') divMateria.classList.add('estado-aprobada');
+            else if (historial.estado === 'regular') divMateria.classList.add('estado-regular');
+            else if (historial.estado === 'cursando') divMateria.classList.add('estado-cursando');
+            else if (esHabilitada) divMateria.classList.add('estado-disponible');
+            else divMateria.classList.add('estado-bloqueada');
+            
+            if (historial.estado === 'aprobada' && historial.nota) {
+              divMateria.innerHTML += `<span class="nota-badge">${historial.nota}</span>`;
             }
 
             divMateria.innerHTML += `
@@ -375,7 +379,17 @@ Giuli<3
               </div>
             `;
             
-            divMateria.addEventListener('click', () => auditarMateria(materia));
+            // Manejador de Clicks Inteligentes (1 click, doble click, triple click)
+            divMateria.addEventListener('click', (e) => {
+              if (e.detail === 1) {
+                setTimeout(() => { if (e.detail === 1) auditarMateria(materia); }, 200);
+              } else if (e.detail === 2) {
+                abrirGestionMateria(materia);
+              } else if (e.detail >= 3) {
+                restaurarVistaGeneral();
+              }
+            });
+
             columna.appendChild(divMateria);
           });
 
@@ -384,13 +398,52 @@ Giuli<3
 
         if (fila.children.length > 0) cont.appendChild(fila);
       });
+
+      renderWidgets(sugeridas, diasOcupados);
+    }
+
+    function renderWidgets(sugeridas, diasOcupados) {
+      const list = document.getElementById('lista-sugeridas');
+      list.innerHTML = sugeridas.length ? sugeridas.map(m => `<li>${m} (${datosMaterias[m].dias.join(', ')})</li>`).join('') : '<li>No hay materias disponibles actualmente.</li>';
+
+      const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      const cal = document.getElementById('calendar');
+      cal.innerHTML = diasSemana.map(d => `
+        <div class="calendar-day ${diasOcupados[d] ? 'active' : ''}">
+          <div class="day-name">${d}</div>
+          <div>${diasOcupados[d] || '<span style="color:#bbb;">Libre</span>'}</div>
+        </div>
+      `).join('');
     }
 
     function auditarMateria(nombreMateria) {
-      materiaSeleccionadaActual = nombreMateria;
       const info = datosMaterias[nombreMateria];
       if (!info) return;
 
+      document.querySelectorAll('.materia').forEach(m => {
+        m.classList.remove('highlight-missing', 'highlight-ok', 'dimmed');
+        if (m.getAttribute('data-materia') !== nombreMateria) m.classList.add('dimmed');
+      });
+
+      const reqListCont = document.getElementById('info-correlativas');
+      if(reqListCont) reqListCont.innerHTML = '';
+
+      info.req.forEach(reqNombre => {
+        const mReq = progresoUsuario[reqNombre];
+        const habilitada = mReq && (mReq.estado === 'aprobada' || mReq.estado === 'regular');
+        const targetCard = document.querySelector(`[data-materia="${reqNombre}"]`);
+        
+        if (targetCard) {
+          targetCard.classList.remove('dimmed');
+          targetCard.classList.add(habilitada ? 'highlight-ok' : 'highlight-missing');
+        }
+      });
+    }
+
+    function abrirGestionMateria(nombreMateria) {
+      materiaSeleccionadaActual = nombreMateria;
+      const info = datosMaterias[nombreMateria];
+      
       document.getElementById('sidebar-default').style.display = 'none';
       document.getElementById('sidebar-content').style.display = 'block';
       document.getElementById('info-nombre').innerText = nombreMateria;
@@ -402,48 +455,14 @@ Giuli<3
       document.getElementById('input-estado').value = historial.estado;
       document.getElementById('input-nota').value = historial.nota || '';
       toggleInputNota();
+      auditarMateria(nombreMateria);
+    }
 
-      const reqListCont = document.getElementById('info-correlativas');
-      reqListCont.innerHTML = '';
-
-      document.querySelectorAll('.materia').forEach(m => {
-        m.classList.remove('highlight-missing', 'dimmed');
-      });
-
-      document.querySelectorAll('.materia').forEach(m => {
-        if (m.getAttribute('data-materia') !== nombreMateria) m.classList.add('dimmed');
-      });
-
-      if (info.req.length === 0) {
-        reqListCont.innerHTML = '<li style="color: #2ecc71; font-weight: bold;">Sin correlativas iniciales.</li>';
-      } else {
-        info.req.forEach(reqNombre => {
-          const mReq = progresoUsuario[reqNombre];
-          
-          // Lógica flexible: Habilitada si está APROBADA o si está REGULAR (adeuda final)
-          const habilitada = mReq && (mReq.estado === 'aprobada' || mReq.estado === 'regular');
-          
-          const li = document.createElement('li');
-          li.textContent = reqNombre;
-          
-          if (habilitada) {
-            li.style.color = '#2ecc71';
-            const det = mReq.estado === 'aprobada' ? '✔ Aprobada' : '✔ Regular (Final Pendiente)';
-            li.textContent += ` (${det})`;
-          } else {
-            const cond = mReq ? mReq.estado.toUpperCase() : 'PENDIENTE';
-            li.style.color = '#e74c3c';
-            li.textContent += ` (❌ Bloqueante: ${cond})`;
-          }
-          reqListCont.appendChild(li);
-
-          const targetCard = document.querySelector(`[data-materia="${reqNombre}"]`);
-          if (targetCard) {
-            targetCard.classList.remove('dimmed');
-            if (!habilitada) targetCard.classList.add('highlight-missing');
-          }
-        });
-      }
+    function restaurarVistaGeneral() {
+      document.querySelectorAll('.materia').forEach(m => m.classList.remove('highlight-missing', 'highlight-ok', 'dimmed'));
+      document.getElementById('sidebar-default').style.display = 'block';
+      document.getElementById('sidebar-content').style.display = 'none';
+      materiaSeleccionadaActual = "";
     }
 
     function toggleInputNota() {
@@ -453,32 +472,21 @@ Giuli<3
 
     function guardarEstadoMateria() {
       if (!materiaSeleccionadaActual) return;
-
       const estado = document.getElementById('input-estado').value;
       const nota = document.getElementById('input-nota').value;
 
-      progresoUsuario[materiaSeleccionadaActual] = {
-        estado: estado,
-        nota: estado === 'aprobada' ? nota : null
-      };
-
-      localStorage.setItem('progresoMecanicaUNLZ', JSON.stringify(progresoUsuario));
+      progresoUsuario[materiaSeleccionadaActual] = { estado: estado, nota: estado === 'aprobada' ? nota : null };
+      localStorage.setItem('progresoMecanicaUNLZ_V2', JSON.stringify(progresoUsuario));
       
-      const diaSeleccionado = document.getElementById('filter-day').value;
-      renderMalla(diaSeleccionado);
-      auditarMateria(materiaSeleccionadaActual);
+      renderMalla(document.getElementById('filter-day').value);
+      restaurarVistaGeneral();
     }
 
     function actualizarFiltro() {
-      const diaSeleccionado = document.getElementById('filter-day').value;
-      renderMalla(diaSeleccionado);
-      document.getElementById('sidebar-default').style.display = 'block';
-      document.getElementById('sidebar-content').style.display = 'none';
+      renderMalla(document.getElementById('filter-day').value);
     }
 
-    window.onload = () => {
-      renderMalla();
-    };
+    window.onload = () => { renderMalla(); };
   </script>
 </body>
-</html>
+</html>  
