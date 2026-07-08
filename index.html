@@ -3,101 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Malla Curricular Pro - Ingeniería Mecánica UNLZ</title>
+  <title>Malla Curricular - Ingeniería Mecánica UNLZ</title>
   <style>
-    :root {
-      --color-aprobada: #2ecc71;  /* Verde */
-      --color-regular: #f1c40f;   /* Amarillo */
-      --color-cursando: #3498db;  /* Azul */
-      --color-crema: #fffdf0;     /* Crema / Blanco Suave */
-      --color-bloqueada: #cccccc;  /* Gris Oscuro */
+    /* El CSS original tuyo corregido e intacto */
+    h1 {
+      margin-bottom: 2rem;
+      color: #660000;
     }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url('https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=1920') no-repeat center center fixed;
-      background-size: cover;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-      transition: background 0.3s ease;
+    h2 {
+      color: #880e0e;
     }
-
-    .backdrop-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(4px);
-      z-index: -1;
+    .year {
+      margin-bottom: 2.5rem;
+      border-left: 6px solid #880e0e;
+      padding-left: 1rem;
     }
-
-    header {
-      background: #880e0e;
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
+    .malla-container {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .cuatrimestre {
+      display: flex;
       flex-wrap: wrap;
       gap: 1rem;
-      box-shadow: 0 4px 10px rgba(136, 14, 14, 0.2);
-    }
-    header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
-    
-    .filter-container select {
-      padding: 6px 10px;
-      border-radius: 4px;
-      border: none;
-      font-weight: bold;
-      color: #880e0e;
-      cursor: pointer;
-    }
-
-    .top-widgets {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
       margin-bottom: 1.5rem;
+      align-items: flex-start;
     }
-    .widget-box {
-      background: white;
-      border-radius: 10px;
-      padding: 1.2rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      border-top: 4px solid var(--color-cursando);
-    }
-    .widget-box h3 { margin-top: 0; color: #880e0e; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;}
-    
-    .calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; text-align: center; margin-top: 10px; }
-    .calendar-day {
-      background: #f8f9fa;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 8px 4px;
-      font-size: 0.75rem;
-      min-height: 60px;
-    }
-    .calendar-day.active {
-      background: #ebf5fb;
-      border-color: var(--color-cursando);
-      color: #2980b9;
-      font-weight: bold;
-    }
-    .day-name { font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 4px; color: #555; }
-    .calendar-mat { font-size: 0.7rem; margin-top: 2px; background: rgba(52, 152, 219, 0.15); border-radius: 3px; padding: 1px; }
-
-    .layout-container { display: flex; gap: 1.5rem; align-items: flex-start; }
-    .malla-container { flex: 3; display: flex; flex-direction: column; gap: 1.5rem; }
-    .cuatrimestre { display: flex; flex-wrap: wrap; gap: 1.2rem; }
-    
-    .cuatri-col {
-      min-width: 290px;
+    .cuatrimestre > .cuatri-col {
+      min-width: 200px;
       background-color: #fff0f0;
       border: 2px solid #dcbaba;
       border-radius: 10px;
       padding: 1rem;
-      box-shadow: 2px 2px 8px rgba(160, 0, 0, 0.03);
+      box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);
       flex: 1;
     }
     .cuatri-title {
@@ -106,105 +45,319 @@
       font-size: 1rem;
       margin-bottom: 1rem;
       font-weight: bold;
-      border-bottom: 2px dashed #dcbaba;
-      padding-bottom: 0.4rem;
     }
-    
     .materia {
-      padding: 0.8rem;
-      border: 2px solid #ccc;
+      padding: 0.5rem;
+      border: 2px solid #dcbaba;
       border-radius: 6px;
-      margin-bottom: 0.7rem;
+      background-color: #fff;
+      margin-bottom: 0.5rem;
       cursor: pointer;
       position: relative;
-      transition: all 0.2s ease;
-      font-size: 0.85rem;
-      font-weight: 500;
-      user-select: none;
+      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+      box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);
+      font-size: 0.9rem;
     }
     .materia:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-color: #b71c1c;
     }
-    
-    .materia.estado-aprobada { border-color: var(--color-aprobada) !important; background-color: #eafeea !important; color: #27ae60; }
-    .materia.estado-regular { border-color: var(--color-regular) !important; background-color: #fff9d4 !important; color: #b7950b; }
-    .materia.estado-cursando { border-color: var(--color-cursando) !important; background-color: #ebf5fb !important; color: #2980b9; }
-    .materia.estado-crema { border-color: #dfd49e !important; background-color: var(--color-crema) !important; color: #444; }
-    .materia.estado-bloqueada { border-color: #999999 !important; background-color: var(--color-bloqueada) !important; color: #666; }
+    .cuatrimestre-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      color: #7f0c0c;
+    }
 
-    .materia.highlight-missing { border-color: #e74c3c !important; background-color: #fdeaea !important; box-shadow: 0 0 8px rgba(231, 76, 60, 0.6); color: #333; }
-    .materia.highlight-ok { border-color: var(--color-aprobada) !important; background-color: #eafeea !important; box-shadow: 0 0 8px rgba(46, 204, 113, 0.6); color: #333; }
-    .materia.dimmed { opacity: 0.15; }
-
-    .materia-meta { display: flex; justify-content: space-between; color: #7f8c8d; margin-top: 6px; font-size: 0.75rem; }
-    .nota-badge { position: absolute; top: -8px; right: -5px; background-color: var(--color-aprobada); color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
-    
+    /* NUEVOS ESTILOS SOLICITADOS (Adaptados perfectamente a tu paleta roja) */
+    .layout-wrapper {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    .malla-wrapper-principal {
+      flex: 3;
+    }
     .sidebar-wrapper {
       flex: 1;
-      min-width: 320px;
+      min-width: 300px;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
       position: sticky;
       top: 20px;
     }
-    .sidebar-panel {
-      background: white;
-      border: 2px solid #880e0e;
+    .panel-lateral {
+      background-color: #fff0f0;
+      border: 2px solid #dcbaba;
       border-radius: 10px;
       padding: 1.2rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);
     }
-    .sidebar-panel h3 { margin: 0 0 10px 0; color: #880e0e; border-bottom: 2px solid #880e0e; padding-bottom: 0.5rem; }
-    
-    .stats-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 5px; }
-    .stats-table td { padding: 8px 4px; border-bottom: 1px solid #eee; }
-    .stats-table td:last-child { text-align: right; font-weight: bold; color: #105666; }
+    .panel-lateral h3 {
+      margin-top: 0;
+      color: #880e0e;
+      border-bottom: 2px solid #dcbaba;
+      padding-bottom: 0.5rem;
+    }
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .stats-table td {
+      padding: 6px 2px;
+      border-bottom: 1px solid #f3d1d1;
+    }
+    .stats-table td:last-child {
+      text-align: right;
+      font-weight: bold;
+      color: #880e0e;
+    }
+    .top-widgets-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; text-align: center; margin-top: 8px; }
+    .calendar-day { background: #fffdfd; border: 1px solid #dcbaba; border-radius: 6px; padding: 6px 2px; font-size: 0.75rem; min-height: 50px; }
+    .calendar-day.active { background: #ebf5fb; border-color: #3498db; color: #2980b9; font-weight: bold; }
+    .day-name { font-weight: bold; border-bottom: 1px solid #eee; margin-bottom: 2px; color: #880e0e; }
+    .calendar-mat-tag { font-size: 0.65rem; background: rgba(52, 152, 219, 0.1); border-radius: 3px; padding: 1px; margin-top: 2px; }
 
-    .form-group { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
-    .form-group select, .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-    
-    .add-day-row { display: flex; gap: 5px; margin-top: 5px; }
-    .add-day-row select { flex-grow: 1; padding: 4px; border-radius: 4px; border: 1px solid #ccc; }
-    .btn-small { background: #105666; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
-    .btn-guardar { margin-top: 12px; background-color: #880e0e; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
-    .btn-guardar:hover { background-color: #b71c1c; }
-    
-    .design-toggle {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      background: #880e0e;
-      color: white;
-      border: 2px solid white;
-      width: 50px; height: 50px;
-      border-radius: 50%;
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      z-index: 999;
-    }
-    .design-panel {
-      position: fixed;
-      bottom: 80px; right: 20px;
-      background: white;
-      border: 2px solid #880e0e;
-      border-radius: 12px;
-      padding: 1.2rem;
-      width: 280px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      display: none;
-      z-index: 998;
-    }
-    .color-picker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; }
-    .color-picker-row input { cursor: pointer; border: none; background: transparent; width: 40px; height: 30px; }
-    
-    .instruction-tip { font-size: 0.75rem; color: #7f8c8d; background: #eee; padding: 6px; border-radius: 4px; margin-bottom: 10px; text-align: center; }
-    .sugeridas-list { padding-left: 15px; margin: 5px 0; font-size: 0.85rem; color: #27ae60; }
-    .req-list { padding-left: 20px; margin: 8px 0; font-size: 0.85rem; }
+    /* Lógica rigurosa de colores solicitada */
+    .materia.estado-aprobada { border-color: #2ecc71 !important; background-color: #eafeea !important; color: #27ae60; }
+    .materia.estado-regular { border-color: #f1c40f !important; background-color: #fff9d4 !important; color: #b7950b; }
+    .materia.estado-cursando { border-color: #3498db !important; background-color: #ebf5fb !important; color: #2980b9; }
+    .materia.estado-crema { border-color: #dfd49e !important; background-color: #fffdf0 !important; color: #444; }
+    .materia.estado-bloqueada { border-color: #999999 !important; background-color: #cccccc !important; color: #666; opacity: 0.6; }
+
+    .materia.highlight-missing { border-color: #e74c3c !important; background-color: #fdeaea !important; box-shadow: 0 0 8px rgba(231, 76, 60, 0.6); }
+    .materia.highlight-ok { border-color: #2ecc71 !important; background-color: #eafeea !important; box-shadow: 0 0 8px rgba(46, 204, 113, 0.6); }
+    .materia.dimmed { opacity: 0.15; }
+
+    .materia-meta { display: flex; justify-content: space-between; color: #7f8c8d; margin-top: 4px; font-size: 0.75rem; }
+    .nota-badge { position: absolute; top: -6px; right: -4px; background-color: #2ecc71; color: white; font-size: 0.7rem; padding: 1px 5px; border-radius: 8px; font-weight: bold; }
+    .form-group { margin-top: 10px; display: flex; flex-direction: column; gap: 2px; font-size: 0.85rem; }
+    .form-group select, .form-group input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+    .checkbox-row-layout { display: flex; flex-direction: column; gap: 4px; background: white; padding: 6px; border-radius: 4px; border: 1px solid #ccc; max-height: 90px; overflow-y: auto; }
+    .req-list-style { padding-left: 15px; margin: 5px 0; font-size: 0.8rem; }
   </style>
 </head>
 <body>
 
-  <div class="backdrop
+  <h1>Malla Curricular - Ingeniería Mecánica UNLZ</h1>
+
+  <div class="top-widgets-row">
+    <div class="cuatrimestre > cuatri-col" style="background-color: white; border: 2px solid #dcbaba; border-radius: 10px; padding: 1rem; box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);">
+      <h3 style="margin-top:0; color:#880e0e; font-size:1rem; border-bottom:1px solid #eee; padding-bottom:4px;">💡 Sugerencias para el próximo cuatrimestre</h3>
+      <ul id="lista-sugeridas" style="padding-left:15px; margin:5px 0; font-size:0.85rem; color:#27ae60; font-weight:bold;"></ul>
+    </div>
+    <div class="cuatrimestre > cuatri-col" style="background-color: white; border: 2px solid #dcbaba; border-radius: 10px; padding: 1rem; box-shadow: 2px 2px 6px rgba(160, 0, 0, 0.1);">
+      <h3 style="margin-top:0; color:#880e0e; font-size:1rem; border-bottom:1px solid #eee; padding-bottom:4px;">📅 Cronograma Semanal</h3>
+      <div class="calendar-grid" id="calendar"></div>
+    </div>
+  </div>
+
+  <div style="font-size:0.8rem; color:#666; margin-bottom:10px;">
+    💡 <strong>Uso:</strong> 1 Clic para ver correlativas | Doble Clic para editar nota/días | 3 Clics rápidos para limpiar filtros.
+  </div>
+
+  <div class="layout-wrapper">
+    <div class="malla-wrapper-principal" id="malla"></div>
+
+    <div class="sidebar-wrapper">
+      <div class="panel-lateral">
+        <h3>📊 Resumen de Avance</h3>
+        <table class="stats-table">
+          <tr><td>Horas logradas:</td><td id="stat-horas">0 hs</td></tr>
+          <tr><td>Materias Regulares:</td><td id="stat-regulares">0</td></tr>
+          <tr><td>Materias Aprobadas:</td><td id="stat-aprobadas">0</td></tr>
+          <tr><td>Porcentaje Carrera:</td><td id="stat-porcentaje">0%</td></tr>
+          <tr><td style="color:#880e0e; font-weight:bold;">Promedio General:</td><td id="stat-promedio" style="color:#880e0e;">0.00</td></tr>
+        </table>
+      </div>
+
+      <div class="panel-lateral">
+        <h3>Panel de Gestión</h3>
+        <div id="sidebar-default"><p style="font-size:0.85rem; margin:0;">Haz doble clic en una materia para editar.</p></div>
+        <div id="sidebar-content" style="display: none;">
+          <h4 id="info-nombre" style="color:#880e0e; margin:0 0 6px 0; font-size:0.95rem;"></h4>
+          <p style="margin:2px 0; font-size:0.8rem;">Horas: <span id="info-horas"></span> | <span id="info-turnos"></span></p>
+          
+          <div class="form-group">
+            <label>Condición:</label>
+            <select id="input-estado" onchange="toggleFormulariosDinamicos()">
+              <option value="pendiente">Pendiente</option>
+              <option value="cursando">Cursando actualmente</option>
+              <option value="regular">Regular (Adeuda final)</option>
+              <option value="aprobada">Aprobada (Finalizada)</option>
+            </select>
+          </div>
+          <div class="form-group" id="group-nota" style="display:none;">
+            <label>Nota Final:</label>
+            <input type="number" id="input-nota" min="4" max="10">
+          </div>
+          <div class="form-group" id="group-dias-elegidos">
+            <label>Días de asistencia:</label>
+            <div id="checkbox-container" class="checkbox-row-layout"></div>
+            <div class="add-day-row">
+              <select id="select-nuevo-dia">
+                <option value="Lunes">Lunes</option><option value="Martes">Martes</option><option value="Miércoles">Miércoles</option>
+                <option value="Jueves">Jueves</option><option value="Viernes">Viernes</option><option value="Sábado">Sábado</option>
+              </select>
+              <button class="btn-small" onclick="agregarNuevoDiaAMateria()">➕</button>
+            </div>
+          </div>
+          <button class="btn-guardar" onclick="guardarEstadoMateria()">Guardar</button>
+          <div style="margin-top:10px; font-size:0.8rem;">
+            <strong>Correlativas necesarias:</strong>
+            <ul class="req-list-style" id="info-correlativas"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tu base de datos oficial cargada con toda tu info horaria de UNLZ
+    const materiasPorDefecto = {
+      'Medios de representación gráfica I': { req: [], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Taller de informática general y aplicada': { req: [], dias: ['Martes'], horas: '32 hs', turno: 'Tarde/Noche' },
+      'Introduccion a la ingenieria': { req: [], dias: ['Miércoles'], horas: '64 hs', turno: 'Tarde/Noche' },
+      'Inglés': { req: [], dias: ['Viernes'], horas: '64 hs', turno: 'Tarde/Noche' },
+      'Medios de representación gráfica II': { req: ['Medios de representación gráfica I'], dias: ['Lunes', 'Viernes'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Fundamentos de programación informática': { req: ['Taller de informática general y aplicada'], dias: ['Martes'], horas: '64 hs', turno: 'Tarde/Noche' },
+      'Higiene y seguridad en el trabajo I': { req: ['Introduccion a la ingenieria'], dias: ['Jueves'], horas: '32 hs', turno: 'Noche' },
+      'Introducción a la gestión del medio ambiente': { req: ['Introduccion a la ingenieria'], dias: ['Martes', 'Jueves'], horas: '32 hs', turno: 'Tarde/Noche' },
+      'Economía I': { req: ['Introduccion a la ingenieria'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
+      'Gestión de la calidad': { req: ['Economía I'], dias: ['Lunes', 'Martes'], horas: '32 hs', turno: 'Tarde/Noche' },
+      'Matemática I': { req: ['Introduccion a la ingenieria'], dias: ['Martes', 'Viernes'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Introducción a la gestión de la innovación y la tecnología': { req: ['Inglés'], dias: ['Miércoles'], horas: '32 hs', turno: 'Tarde/Noche' },
+      'Economía II': { req: ['Economía I'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
+      'Legislación y ejercicio profesional': { req: ['Higiene y seguridad en el trabajo I'], dias: ['Jueves'], horas: '64 hs', turno: 'Tarde/Noche' },
+      'Metrología': { req: ['Medios de representación gráfica II'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
+      'Matemática II': { req: ['Matemática I'], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Organizacion y gestion industrial': { req: ['Gestión de la calidad','Economía II'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
+      'Física I': { req: ['Matemática I'], dias: ['Miércoles', 'Viernes'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Fundamentos de la química': { req: ['Introducción a la gestión del medio ambiente'], dias: ['Martes', 'Sábado'], horas: '64 hs', turno: 'Mañana/Tarde/Noche' },
+      'Termodinámica': { req: ['Física I','Fundamentos de la química'], dias: ['Lunes', 'Sábado'], horas: '128 hs', turno: 'Noche/Mañana' },
+      'Física II': { req: ['Física I'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
+      'Cálculo I': { req: ['Matemática II'], dias: ['Miércoles', 'Viernes'], horas: '128 hs', turno: 'Tarde/Noche' },
+      'Probabilidad y estadística': { req: ['Matemática I'], dias: ['Jueves'], horas: '64 hs', turno: 'Noche' },
+      'Estática': { req: ['Física I','Medios de representación gráfica II'], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Noche' },
+      'Higiene y seguridad en el trabajo II': { req: ['Medios de representación gráfica II','Física II'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
+      'Cálculo II': { req: ['Cálculo I'], dias: ['Martes', 'Viernes'], horas: '128 hs', turno: 'Noche' },
+      'Mecánica teórica': { req: ['Cálculo I'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
+      'Fundamentos de electrónica': { req: ['Fundamentos de programación informática','Física II'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
+      'Formulacion gestion y evaluacion de proyectos': { req: ['Organizacion y gestion industrial','Cálculo I'], dias: ['Lunes'], horas: '64 hs', turno: 'Noche' },
+      'Ciencia y tecnología de los materiales': { req: ['Estática','Fundamentos de la química'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
+      'Sistema y tecnología para la gestión ambiental': { req: ['Fundamentos de la química','Higiene y seguridad en el trabajo II'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
+      'Mecanismos': { req: ['Mecánica teórica'], dias: ['Miércoles'], horas: '32 hs', turno: 'Noche' },
+      'Electrotecnia': { req: ['Física II'], dias: ['Jueves', 'Sábado'], horas: '128 hs', turno: 'Noche/Mañana' },
+      'Mecánicas de los materiales': { req: ['Estática'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
+      'Modelado y dinámica de sistemas físicos': { req: ['Mecánicas de los materiales','Cálculo II'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
+      'Tecnología mecánica': { req: ['Mecánicas de los materiales'], dias: ['Miércoles'], horas: '64 hs', turno: 'Noche' },
+      'Máquinas e instalaciones eléctricas': { req: ['Electrotecnia'], dias: ['Jueves'], horas: '64 hs', turno: 'Noche' },
+      'Mecánica de los fluidos': { req: ['Termodinámica'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
+      'Tecnologia del calor': { req: ['Termodinámica'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' },
+      'Diseño de componentes de máquinas': { req: ['Probabilidad y estadística','Tecnología mecánica','Modelado y dinámica de sistemas físicos','Metrología'], dias: ['Lunes', 'Jueves'], horas: '96 hs', turno: 'Noche' },
+      'Instalaciones industriales y mecánicas de almacenaje': { req: ['Mecánica de los fluidos'], dias: ['Martes'], horas: '64 hs', turno: 'Noche' },
+      'Automatización industrial': { req: ['Mecánica de los fluidos','Electrotecnia'], dias: ['Miércoles'], horas: '64 hs', turno: 'Noche' },
+      'Vigilancia tecnológica e inteligencia competitiva': { req: ['Introducción a la gestión de la innovación y la tecnología','Legislación y ejercicio profesional','Tecnología mecánica'], dias: ['Jueves'], horas: '32 hs', turno: 'Noche' },
+      'Maquinas termicas': { req: ['Tecnologia del calor'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
+      'Proyecto en ingeniería mecánica': { req: ['Automatización industrial','Formulacion gestion y evaluacion de proyectos','Maquinas termicas','Vigilancia tecnológica e inteligencia competitiva','Instalaciones industriales y mecánicas de almacenaje'], dias: ['Lunes', 'Miércoles'], horas: '96 hs', turno: 'Noche' },
+      'Tecnología de la soldadura': { req: ['Ciencia y tecnología de los materiales'], dias: ['Martes'], horas: '32 hs', turno: 'Noche' },
+      'Gestion e ingenieria del mantenimiento': { req: ['Máquinas e instalaciones eléctricas','Maquinas termicas','Diseño de componentes de máquinas'], dias: ['Jueves'], horas: '64 hs', turno: 'Noche' },
+      'Tecnologia del frio': { req: ['Tecnologia del calor'], dias: ['Viernes'], horas: '64 hs', turno: 'Noche' },
+      'Sistema de control': { req: ['Automatización industrial'], dias: ['Sábado'], horas: '64 hs', turno: 'Mañana' }
+    };
+
+    const estructura = [
+      [["Medios de representación gráfica I", "Introduccion a la ingenieria", "Inglés", "Taller de informática general y aplicada"],
+       ["Medios de representación gráfica II", "Fundamentos de programación informática", "Higiene y seguridad en el trabajo I", "Introducción a la gestión del medio ambiente", "Economía I"]],
+      [["Gestión de la calidad", "Matemática I", "Introducción a la gestión de la innovación y la tecnología", "Economía II", "Legislación y ejercicio profesional", "Metrología"],
+       ["Matemática II", "Organizacion y gestion industrial", "Física I", "Fundamentos de la química"]],
+      [["Termodinámica", "Física II", "Cálculo I", "Probabilidad y estadística"],
+       ["Estática", "Higiene y seguridad en el trabajo II", "Cálculo II", "Mecánica teórica", "Fundamentos de electrónica"]],
+      [["Formulacion gestion y evaluacion de proyectos", "Ciencia y tecnología de los materiales", "Sistema y tecnología para la gestión ambiental", "Mecanismos", "Electrotecnia", "Mecánicas de los materiales"],
+       ["Modelado y dinámica de sistemas físicos", "Tecnología mecánica", "Máquinas e instalaciones eléctricas", "Mecánica de los fluidos", "Tecnologia del calor"]],
+      [["Diseño de componentes de máquinas", "Instalaciones industriales y mecánicas de almacenaje", "Automatización industrial", "Vigilancia tecnológica e inteligencia competitiva", "Maquinas termicas"],
+       ["Proyecto en ingeniería mecánica", "Tecnología de la soldadura", "Gestion e ingenieria del mantenimiento", "Tecnologia del frio", "Sistema de control"]]
+    ];
+
+    let datosMaterias = JSON.parse(localStorage.getItem('datosMateriasMecanicaUNLZ')) || materiasPorDefecto;
+    let progresoUsuario = JSON.parse(localStorage.getItem('progresoMecanicaUNLZ_V3')) || {};
+    let mSeleccionada = "";
+
+    function verificarHabilitacion(nombreMateria) {
+      const info = datosMaterias[nombreMateria];
+      if (!info) return false;
+      const historial = progresoUsuario[nombreMateria] || { estado: 'pendiente' };
+      if (historial.estado === 'aprobada' || historial.estado === 'regular' || historial.estado === 'cursando') return false;
+      if (info.req.length === 0) return true;
+      return info.req.every(reqNombre => {
+        const mReq = progresoUsuario[reqNombre];
+        return mReq && (mReq.estado === 'aprobada' || mReq.estado === 'regular');
+      });
+    }
+
+    function renderMalla() {
+      const cont = document.getElementById('malla');
+      if(!cont) return;
+      cont.innerHTML = '';
+      let sugeridas = [];
+      let diasOcupados = {};
+
+      let acumuladorHoras = 0;
+      let contadorRegulares = 0;
+      let contadorAprobadas = 0;
+      let sumatoriaNotas = 0;
+      let cantidadMateriasConNota = 0;
+      const totalMateriasPlan = Object.keys(datosMaterias).length;
+
+      estructura.forEach((anual, añoIdx) => {
+        const divAño = document.createElement('div');
+        divAño.className = 'year';
+        const tituloAño = document.createElement('h2');
+        tituloAño.textContent = `${añoIdx + 1}° Año`;
+        divAño.appendChild(tituloAño);
+
+        const divFilaCuatris = document.createElement('div');
+        divFilaCuatris.className = 'cuatrimestre';
+
+        anual.forEach((col, colIdx) => {
+          const columna = document.createElement('div');
+          columna.className = 'cuatri-col';
+          const numCuatri = (añoIdx * 2) + (colIdx + 1);
+
+          const titulo = document.createElement('div');
+          titulo.className = 'cuatri-title';
+          titulo.textContent = `${numCuatri}° Cuatrimestre`;
+          columna.appendChild(titulo);
+
+          col.forEach(materia => {
+            const infoMat = datosMaterias[materia];
+            if (!infoMat) return;
+
+            const historial = progresoUsuario[materia] || { estado: 'pendiente', diasElegidos: [] };
+            const esHabilitada = verificarHabilitacion(materia);
+
+            if (esHabilitada) sugeridas.push(materia);
+            
+            const intHoras = parseInt(infoMat.horas) || 0;
+            if (historial.estado === 'aprobada') {
+              contadorAprobadas++;
+              acumuladorHoras += intHoras;
+              if (historial.nota) {
+                sumatoriaNotas += parseFloat(historial.nota);
+                document.getElementById('stat-promedio').innerText = (sumatoriaNotas / ++cantidadMateriasConNota).toFixed(2);
+              }
+            } else if (historial.estado === 'regular') {
+              contadorRegulares++;
+              acumuladorHoras += intHoras;
+            } else if (historial.estado === 'cursando') {
+              const diasACursar = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos : infoMat.dias;
+              diasACursar.forEach(d => {
+                if (!diasOcupados[d]) diasOcupados[d] = [];
+                diasOcupados
