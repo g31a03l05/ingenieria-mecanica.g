@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Malla Curricular Pro - Ingeniería Mecánica UNLZ</title>
   <style>
-    /* Variables CSS dinámicas con la paleta de tu imagen por defecto */
     :root {
-      --bg-image: url('https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=1920'); /* Fondo por defecto elegante si no se carga uno */
       --color-aprobada: #839958;  /* Moss Green */
       --color-regular: #D3968C;   /* Rosy Brown */
       --color-cursando: #105666;  /* Midnight Green */
       --color-crema: #F7F4D5;     /* Beige */
       --color-bloqueada: #0A3323;  /* Dark Green */
       
-      /* Colores de texto automáticos según contraste */
       --text-aprobada: #ffffff;
       --text-regular: #ffffff;
       --text-cursando: #ffffff;
@@ -24,7 +21,10 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-image) no-repeat center center fixed;
+      background-color: #0A3323; /* Fondo de respaldo */
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       background-size: cover;
       margin: 0;
       padding: 20px;
@@ -32,11 +32,10 @@
       transition: background 0.3s ease;
     }
 
-    /* Capa de desenfoque grunge/aesthetic sobre el fondo */
     .backdrop-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(10, 51, 35, 0.4); /* Tinte verde oscuro traslúcido */
+      background: rgba(10, 51, 35, 0.4);
       backdrop-filter: blur(4px);
       z-index: -1;
     }
@@ -55,7 +54,7 @@
       gap: 1rem;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
-    header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+    header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; }
     
     .filter-container select {
       padding: 6px 10px;
@@ -82,7 +81,6 @@
     }
     .widget-box h3 { margin-top: 0; color: #0A3323; font-size: 1.1rem; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem;}
     
-    /* Calendario Semanal */
     .calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; text-align: center; margin-top: 10px; }
     .calendar-day {
       background: rgba(247, 244, 213, 0.6);
@@ -124,7 +122,6 @@
       padding-bottom: 0.4rem;
     }
     
-    /* Estilos dinámicos de tarjetas */
     .materia {
       padding: 0.8rem;
       border: 2px solid transparent;
@@ -156,7 +153,6 @@
     .materia-meta { display: flex; justify-content: space-between; opacity: 0.8; margin-top: 6px; font-size: 0.75rem; }
     .nota-badge { position: absolute; top: -8px; right: -5px; background-color: #2ecc71; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
     
-    /* Paneles laterales */
     .sidebar-panel {
       flex: 1;
       min-width: 320px;
@@ -172,7 +168,6 @@
     .form-group { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
     .form-group select, .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
     
-    /* Engranaje Flotante del Diseñador */
     .design-toggle {
       position: fixed;
       bottom: 20px; right: 20px;
@@ -237,7 +232,7 @@
   </div>
 
   <div class="instruction-tip">
-    ⚙️ <strong>Atajos:</strong> 1 Clic para ver correlativas | Doble Clic para editar nota/estado | 3 Clics para limpiar pantalla. El engranaje de abajo te permite cambiar los colores y la foto de fondo.
+    ⚙️ <strong>Atajos:</strong> 1 Clic para ver correlativas | Doble Clic para editar nota/estado | 3 Clics para limpiar pantalla.
   </div>
 
   <div class="layout-container">
@@ -284,20 +279,21 @@
   <button class="design-toggle" onclick="toggleDesignPanel()">⚙️</button>
   <div class="design-panel" id="design-panel">
     <h4 style="margin:0 0 10px 0; color:#0A3323; border-bottom:1px solid #ddd; padding-bottom:5px;">🎨 Diseñador Temático</h4>
-    <div class="form-group" style="margin-bottom:10px;">
-      <label style="font-size:0.8rem;">URL de Imagen de Fondo:</label>
-      <input type="text" id="design-bg-url" placeholder="Pegar link de imagen..." onchange="cambiarFondoPantalla(this.value)">
+    
+    <div class="form-group" style="margin-bottom:15px;">
+      <label style="font-size:0.8rem; font-weight:bold; color:#0A3323;">Subir fondo desde tu PC:</label>
+      <input type="file" id="design-bg-file" accept="image/*" onchange="subirFondoLocal(this)">
     </div>
+
     <div class="color-picker-row"><span>Aprobada (Verde)</span><input type="color" id="p-aprobada" onchange="cambiarVariableCSS('--color-aprobada', this.value)"></div>
     <div class="color-picker-row"><span>Regular (Amarillo)</span><input type="color" id="p-regular" onchange="cambiarVariableCSS('--color-regular', this.value)"></div>
     <div class="color-picker-row"><span>Cursando (Azul)</span><input type="color" id="p-cursando" onchange="cambiarVariableCSS('--color-cursando', this.value)"></div>
     <div class="color-picker-row"><span>Habilitada (Crema)</span><input type="color" id="p-crema" onchange="cambiarVariableCSS('--color-crema', this.value)"></div>
     <div class="color-picker-row"><span>Bloqueada (Oscuro)</span><input type="color" id="p-bloqueada" onchange="cambiarVariableCSS('--color-bloqueada', this.value)"></div>
-    <button class="btn-guardar" style="font-size:0.8rem; padding:5px;" onclick="restablecerDisenoOriginal()">Resetear Colores</button>
+    <button class="btn-guardar" style="font-size:0.8rem; padding:5px;" onclick="restablecerDisenoOriginal()">Resetear Malla</button>
   </div>
 
   <script>
-    // Tu base de datos oficial e inalterada de materias
     const datosMaterias = {
       'Medios de representación gráfica I': { req: [], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde/Noche' },
       'Taller de informática general y aplicada': { req: [], dias: ['Martes'], horas: '32 hs', turno: 'Tarde/Noche' },
@@ -565,7 +561,6 @@
       renderMalla(document.getElementById('filter-day').value);
     }
 
-    /* SISTEMA DE PERSONALIZACIÓN DE DISEÑO */
     function toggleDesignPanel() {
       const panel = document.getElementById('design-panel');
       panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
@@ -577,40 +572,6 @@
       localStorage.setItem('disenoMallaMecanica', JSON.stringify(disenoPersonalizado));
     }
 
-    function cambiarFondoPantalla(url) {
-      if(!url) return;
-      document.body.style.backgroundImage = `url('${url}')`;
-      disenoPersonalizado['--bg-image'] = url;
-      localStorage.setItem('disenoMallaMecanica', JSON.stringify(disenoPersonalizado));
-    }
-
-    function cargarDisenoGuardado() {
-      // Aplicar colores e imagen guardados en la sesión anterior
-      if (disenoPersonalizado['--bg-image']) {
-        document.body.style.backgroundImage = `url('${disenoPersonalizado['--bg-image']}')`;
-        document.getElementById('design-bg-url').value = disenoPersonalizado['--bg-image'];
-      }
-      const propiedades = ['--color-aprobada', '--color-regular', '--color-cursando', '--color-crema', '--color-bloqueada'];
-      propiedades.forEach(p => {
-        if (disenoPersonalizado[p]) {
-          document.documentElement.style.setProperty(p, disenoPersonalizado[p]);
-          const inputId = p.replace('--color-', 'p-');
-          const element = document.getElementById(inputId);
-          if (element) element.value = disenoPersonalizado[p];
-        }
-      });
-    }
-
-    function restablecerDisenoOriginal() {
-      localStorage.removeItem('disenoMallaMecanica');
-      disenoPersonalizado = {};
-      location.reload();
-    }
-
-    window.onload = () => { 
-      cargarDisenoGuardado();
-      renderMalla(); 
-    };
-  </script>
-</body>
-</html>
+    // NUEVO LECTOR DE ARCHIVOS DE TU PC
+    function subirFondoLocal(input) {
+      if (input.files && input.files
