@@ -574,4 +574,43 @@
 
     // NUEVO LECTOR DE ARCHIVOS DE TU PC
     function subirFondoLocal(input) {
-      if (input.files && input.files
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64Image = e.target.result;
+          document.body.style.backgroundImage = `url('${base64Image}')`;
+          disenoPersonalizado['--bg-image'] = base64Image;
+          localStorage.setItem('disenoMallaMecanica', JSON.stringify(disenoPersonalizado));
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function cargarDisenoGuardado() {
+      if (disenoPersonalizado['--bg-image']) {
+        document.body.style.backgroundImage = `url('${disenoPersonalizado['--bg-image']}')`;
+      }
+      const propiedades = ['--color-aprobada', '--color-regular', '--color-cursando', '--color-crema', '--color-bloqueada'];
+      propiedades.forEach(p => {
+        if (disenoPersonalizado[p]) {
+          document.documentElement.style.setProperty(p, disenoPersonalizado[p]);
+          const inputId = p.replace('--color-', 'p-');
+          const element = document.getElementById(inputId);
+          if (element) element.value = disenoPersonalizado[p];
+        }
+      });
+    }
+
+    function restablecerDisenoOriginal() {
+      localStorage.removeItem('disenoMallaMecanica');
+      disenoPersonalizado = {};
+      location.reload();
+    }
+
+    window.onload = () => { 
+      cargarDisenoGuardado();
+      renderMalla(); 
+    };
+  </script>
+</body>
+</html>
