@@ -5,35 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Malla Curricular Pro - Ingeniería Mecánica UNLZ</title>
   <style>
+    /* Variables CSS dinámicas con la paleta de tu imagen por defecto */
     :root {
-      --color-aprobada: #2ecc71;
-      --color-regular: #f1c40f;
-      --color-cursando: #3498db;
-      --color-crema: #fffdf0; /* Crema para habilitadas */
-      --color-bloqueada: #cccccc; /* Gris oscuro */
+      --bg-image: url('https://images.unsplash.com/photo-1508193638397-1c4234db14d8?q=80&w=1920'); /* Fondo por defecto elegante si no se carga uno */
+      --color-aprobada: #839958;  /* Moss Green */
+      --color-regular: #D3968C;   /* Rosy Brown */
+      --color-cursando: #105666;  /* Midnight Green */
+      --color-crema: #F7F4D5;     /* Beige */
+      --color-bloqueada: #0A3323;  /* Dark Green */
+      
+      /* Colores de texto automáticos según contraste */
+      --text-aprobada: #ffffff;
+      --text-regular: #ffffff;
+      --text-cursando: #ffffff;
+      --text-crema: #333333;
+      --text-bloqueada: #a2bca2;
     }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f6fa;
+      background: var(--bg-image) no-repeat center center fixed;
+      background-size: cover;
       margin: 0;
       padding: 20px;
       color: #333;
+      transition: background 0.3s ease;
     }
+
+    /* Capa de desenfoque grunge/aesthetic sobre el fondo */
+    .backdrop-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(10, 51, 35, 0.4); /* Tinte verde oscuro traslúcido */
+      backdrop-filter: blur(4px);
+      z-index: -1;
+    }
+
     header {
-      background-color: #880e0e;
-      color: white;
+      background: rgba(10, 51, 35, 0.85);
+      border: 1px solid rgba(247, 244, 213, 0.2);
+      color: var(--color-crema);
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 12px;
       margin-bottom: 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
-      box-shadow: 0 4px 10px rgba(136, 14, 14, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
-    header h1 { margin: 0; font-size: 1.8rem; }
+    header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
     
+    .filter-container select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--color-aprobada);
+      background: var(--color-crema);
+      color: #0A3323;
+      font-weight: bold;
+    }
+
     .top-widgets {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -41,134 +73,148 @@
       margin-bottom: 1.5rem;
     }
     .widget-box {
-      background: white;
-      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
       padding: 1.2rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      border-top: 4px solid #880e0e;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border-top: 4px solid var(--color-cursando);
     }
-    .widget-box h3 { margin-top: 0; color: #880e0e; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem;}
+    .widget-box h3 { margin-top: 0; color: #0A3323; font-size: 1.1rem; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem;}
     
     /* Calendario Semanal */
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 5px;
-      text-align: center;
-      margin-top: 10px;
-    }
+    .calendar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; text-align: center; margin-top: 10px; }
     .calendar-day {
-      background: #f8f9fa;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      background: rgba(247, 244, 213, 0.6);
+      border: 1px solid #ccc;
+      border-radius: 6px;
       padding: 8px 4px;
       font-size: 0.75rem;
       min-height: 60px;
-      display: flex;
-      flex-direction: column;
     }
     .calendar-day.active {
-      background: #ebf5fb;
+      background: var(--color-cursando);
       border-color: var(--color-cursando);
-      color: #2980b9;
+      color: var(--text-cursando);
       font-weight: bold;
     }
-    .day-name { font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 4px; color: #555; }
-    .calendar-mat { font-size: 0.7rem; margin-top: 2px; background: rgba(52, 152, 219, 0.15); border-radius: 3px; padding: 1px; }
+    .day-name { font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; }
+    .calendar-mat { font-size: 0.7rem; margin-top: 2px; background: rgba(255,255,255,0.3); border-radius: 3px; padding: 1px; }
 
-    .layout-container {
-      display: flex;
-      gap: 1.5rem;
-      align-items: flex-start;
-    }
-    .malla-container {
-      flex: 3;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
+    .layout-container { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .malla-container { flex: 3; display: flex; flex-direction: column; gap: 1.5rem; }
     .cuatrimestre { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+    
     .cuatri-col {
       min-width: 290px;
-      background-color: #fff0f0;
-      border: 2px solid #dcbaba;
-      border-radius: 10px;
+      background: rgba(10, 51, 35, 0.8);
+      border: 1px solid rgba(247, 244, 213, 0.2);
+      border-radius: 12px;
       padding: 1rem;
-      box-shadow: 2px 2px 8px rgba(160, 0, 0, 0.03);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
       flex: 1;
     }
     .cuatri-title {
-      color: #880e0e;
+      color: var(--color-crema);
       text-align: center;
       font-size: 1rem;
       margin-bottom: 1rem;
       font-weight: bold;
-      border-bottom: 2px dashed #dcbaba;
+      border-bottom: 1px dashed rgba(247, 244, 213, 0.3);
       padding-bottom: 0.4rem;
     }
     
-    /* Tarjetas de Materia con la nueva lógica estricta de colores */
+    /* Estilos dinámicos de tarjetas */
     .materia {
       padding: 0.8rem;
-      border: 2px solid #ccc;
-      border-radius: 6px;
+      border: 2px solid transparent;
+      border-radius: 8px;
       margin-bottom: 0.7rem;
       cursor: pointer;
       position: relative;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       font-size: 0.85rem;
-      font-weight: 500;
+      font-weight: 600;
       user-select: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .materia:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
     }
     
-    .materia.estado-aprobada { border-color: var(--color-aprobada) !important; background-color: #eafeea !important; color: #27ae60; }
-    .materia.estado-regular { border-color: var(--color-regular) !important; background-color: #fff9d4 !important; color: #b7950b; }
-    .materia.estado-cursando { border-color: var(--color-cursando) !important; background-color: #ebf5fb !important; color: #2980b9; }
-    .materia.estado-crema { border-color: #dfd49e !important; background-color: var(--color-crema) !important; color: #444; }
-    .materia.estado-bloqueada { border-color: #999999 !important; background-color: var(--color-bloqueada) !important; color: #666; }
+    .materia.estado-aprobada { background-color: var(--color-aprobada) !important; color: var(--text-aprobada) !important; }
+    .materia.estado-regular { background-color: var(--color-regular) !important; color: var(--text-regular) !important; }
+    .materia.estado-cursando { background-color: var(--color-cursando) !important; color: var(--text-cursando) !important; }
+    .materia.estado-crema { background-color: var(--color-crema) !important; color: var(--text-crema) !important; }
+    .materia.estado-bloqueada { background-color: var(--color-bloqueada) !important; color: var(--text-bloqueada) !important; border-color: rgba(255,255,255,0.05); }
 
-    /* Efectos dinámicos por clicks */
-    .materia.highlight-missing { border-color: #e74c3c !important; background-color: #fdeaea !important; box-shadow: 0 0 8px rgba(231, 76, 60, 0.6); color: #333; }
-    .materia.highlight-ok { border-color: var(--color-aprobada) !important; background-color: #eafeea !important; box-shadow: 0 0 8px rgba(46, 204, 113, 0.6); color: #333; }
-    .materia.dimmed { opacity: 0.15; }
+    .materia.highlight-missing { border-color: #e74c3c !important; box-shadow: 0 0 12px #e74c3c !important; opacity: 1 !important; }
+    .materia.highlight-ok { border-color: #2ecc71 !important; box-shadow: 0 0 12px #2ecc71 !important; opacity: 1 !important; }
+    .materia.dimmed { opacity: 0.2; }
 
-    .materia-meta { display: flex; justify-content: space-between; color: #7f8c8d; margin-top: 6px; font-size: 0.75rem; }
-    .nota-badge { position: absolute; top: -8px; right: -5px; background-color: var(--color-aprobada); color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+    .materia-meta { display: flex; justify-content: space-between; opacity: 0.8; margin-top: 6px; font-size: 0.75rem; }
+    .nota-badge { position: absolute; top: -8px; right: -5px; background-color: #2ecc71; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
     
+    /* Paneles laterales */
     .sidebar-panel {
       flex: 1;
       min-width: 320px;
-      background: white;
-      border: 2px solid #880e0e;
-      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 2px solid #0A3323;
+      border-radius: 12px;
       padding: 1.2rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
       position: sticky;
       top: 20px;
     }
     .form-group { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
-    .form-group select, .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-    .checkbox-days { display: flex; flex-direction: column; gap: 5px; margin-top: 5px; background: #fafafa; padding: 8px; border-radius: 4px; border: 1px solid #eee; }
-    .checkbox-days label { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .btn-guardar { margin-top: 12px; background-color: #880e0e; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
-    .btn-guardar:hover { background-color: #b71c1c; }
-    .req-list { padding-left: 20px; margin: 8px 0; font-size: 0.85rem; }
-    .sugeridas-list { padding-left: 15px; margin: 5px 0; font-size: 0.85rem; color: #27ae60; font-weight: bold; }
-    .instruction-tip { font-size: 0.75rem; color: #7f8c8d; background: #eee; padding: 6px; border-radius: 4px; margin-bottom: 10px; text-align: center; }
+    .form-group select, .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+    
+    /* Engranaje Flotante del Diseñador */
+    .design-toggle {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      background: #0A3323;
+      color: var(--color-crema);
+      border: 2px solid var(--color-crema);
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 999;
+    }
+    .design-panel {
+      position: fixed;
+      bottom: 80px; right: 20px;
+      background: white;
+      border: 2px solid #0A3323;
+      border-radius: 12px;
+      padding: 1.2rem;
+      width: 280px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 998;
+    }
+    .color-picker-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; }
+    .color-picker-row input { cursor: pointer; border: none; background: transparent; width: 40px; height: 30px; }
+    
+    .instruction-tip { font-size: 0.75rem; color: var(--color-crema); background: rgba(10, 51, 35, 0.9); padding: 8px; border-radius: 6px; margin-bottom: 15px; text-align: center; }
+    .sugeridas-list { padding-left: 15px; margin: 5px 0; font-size: 0.85rem; color: #27ae60; }
   </style>
 </head>
 <body>
 
+  <div class="backdrop-overlay"></div>
+
   <header>
     <h1>Malla Curricular - Ingeniería Mecánica UNLZ</h1>
     <div class="filter-container">
-      <label for="filter-day">Filtrar Cursada: </label>
       <select id="filter-day" onchange="actualizarFiltro()">
-        <option value="todos">Todos los días</option>
+        <option value="todos">🔎 Todos los días</option>
         <option value="Lunes">Lunes</option>
         <option value="Martes">Martes</option>
         <option value="Miércoles">Miércoles</option>
@@ -184,15 +230,14 @@
       <h3>💡 Sugerencias para cursar el próximo cuatrimestre</h3>
       <ul id="lista-sugeridas" class="sugeridas-list"></ul>
     </div>
-
     <div class="widget-box">
-      <h3>📅 Cronograma de Cursada Semanal</h3>
+      <h3>📅 Cronograma Semanal</h3>
       <div class="calendar-grid" id="calendar"></div>
     </div>
   </div>
 
   <div class="instruction-tip">
-    💡 <strong>Instrucciones:</strong> 1 Clic para auditar correlativas | Doble Clic para gestionar estado, nota y días | 3 Clics rápidos para restaurar vista general.
+    ⚙️ <strong>Atajos:</strong> 1 Clic para ver correlativas | Doble Clic para editar nota/estado | 3 Clics para limpiar pantalla. El engranaje de abajo te permite cambiar los colores y la foto de fondo.
   </div>
 
   <div class="layout-container">
@@ -201,14 +246,13 @@
     <aside class="sidebar-panel">
       <h3>Panel de Gestión</h3>
       <div id="sidebar-default">
-        <p>Selecciona una materia mediante clicks para interactuar con ella.</p>
+        <p>Haz doble clic sobre una materia para calificarla o cambiar su condición.</p>
       </div>
       
       <div id="sidebar-content" style="display: none;">
-        <h4 id="info-nombre" style="color: #880e0e; margin: 0 0 8px 0;"></h4>
+        <h4 id="info-nombre" style="color: #0A3323; margin: 0 0 8px 0; font-size: 1.1rem;"></h4>
         <p style="margin: 3px 0; font-size:0.85rem;"><strong>Horas:</strong> <span id="info-horas"></span> | <span id="info-turnos"></span></p>
         <p style="margin: 3px 0; font-size:0.85rem;"><strong>Días Base:</strong> <span id="info-dias"></span></p>
-        
         <hr style="border: 0; border-top: 1px solid #eee; margin: 12px 0;">
         
         <div class="form-group">
@@ -216,32 +260,44 @@
           <select id="input-estado" onchange="toggleFormulariosDinamicos()">
             <option value="pendiente">Pendiente</option>
             <option value="cursando">Cursando actualmente</option>
-            <option value="regular">Regular (Adeuda examen final)</option>
-            <option value="aprobada">Aprobada (Final / Promoción)</option>
+            <option value="regular">Regular (Adeuda final)</option>
+            <option value="aprobada">Aprobada (Final/Promoción)</option>
           </select>
         </div>
-
         <div class="form-group" id="group-nota" style="display: none;">
           <label for="input-nota"><strong>Nota Final:</strong></label>
           <input type="number" id="input-nota" min="4" max="10" placeholder="Ej: 8">
         </div>
-
         <div class="form-group" id="group-dias-elegidos" style="display: none;">
-          <label><strong>Elegir días específicos a cursar:</strong></label>
-          <div id="checkbox-container" class="checkbox-days"></div>
+          <label><strong>Días de asistencia:</strong></label>
+          <div id="checkbox-container" style="display:flex; flex-direction:column; gap:5px; background:#f9f9f9; padding:8px; border-radius:6px;"></div>
         </div>
-
         <button class="btn-guardar" onclick="guardarEstadoMateria()">Guardar Historial</button>
-
         <div style="margin-top: 15px;">
-          <strong>Estado de Requisitos:</strong>
+          <strong>Correlativas necesarias:</strong>
           <ul class="req-list" id="info-correlativas"></ul>
         </div>
       </div>
     </aside>
   </div>
 
+  <button class="design-toggle" onclick="toggleDesignPanel()">⚙️</button>
+  <div class="design-panel" id="design-panel">
+    <h4 style="margin:0 0 10px 0; color:#0A3323; border-bottom:1px solid #ddd; padding-bottom:5px;">🎨 Diseñador Temático</h4>
+    <div class="form-group" style="margin-bottom:10px;">
+      <label style="font-size:0.8rem;">URL de Imagen de Fondo:</label>
+      <input type="text" id="design-bg-url" placeholder="Pegar link de imagen..." onchange="cambiarFondoPantalla(this.value)">
+    </div>
+    <div class="color-picker-row"><span>Aprobada (Verde)</span><input type="color" id="p-aprobada" onchange="cambiarVariableCSS('--color-aprobada', this.value)"></div>
+    <div class="color-picker-row"><span>Regular (Amarillo)</span><input type="color" id="p-regular" onchange="cambiarVariableCSS('--color-regular', this.value)"></div>
+    <div class="color-picker-row"><span>Cursando (Azul)</span><input type="color" id="p-cursando" onchange="cambiarVariableCSS('--color-cursando', this.value)"></div>
+    <div class="color-picker-row"><span>Habilitada (Crema)</span><input type="color" id="p-crema" onchange="cambiarVariableCSS('--color-crema', this.value)"></div>
+    <div class="color-picker-row"><span>Bloqueada (Oscuro)</span><input type="color" id="p-bloqueada" onchange="cambiarVariableCSS('--color-bloqueada', this.value)"></div>
+    <button class="btn-guardar" style="font-size:0.8rem; padding:5px;" onclick="restablecerDisenoOriginal()">Resetear Colores</button>
+  </div>
+
   <script>
+    // Tu base de datos oficial e inalterada de materias
     const datosMaterias = {
       'Medios de representación gráfica I': { req: [], dias: ['Lunes', 'Jueves'], horas: '128 hs', turno: 'Tarde/Noche' },
       'Taller de informática general y aplicada': { req: [], dias: ['Martes'], horas: '32 hs', turno: 'Tarde/Noche' },
@@ -308,16 +364,14 @@
     ];
 
     let progresoUsuario = JSON.parse(localStorage.getItem('progresoMecanicaUNLZ_V3')) || {};
+    let disenoPersonalizado = JSON.parse(localStorage.getItem('disenoMallaMecanica')) || {};
     let mSeleccionada = "";
 
     function verificarHabilitacion(nombreMateria) {
       const info = datosMaterias[nombreMateria];
       if (!info) return false;
-      
       const historial = progresoUsuario[nombreMateria] || { estado: 'pendiente' };
-      // Si ya está aprobada o regularizada, NO cuenta como sugerencia/pendiente habilitada
       if (historial.estado === 'aprobada' || historial.estado === 'regular' || historial.estado === 'cursando') return false;
-      
       if (info.req.length === 0) return true;
       return info.req.every(reqNombre => {
         const mReq = progresoUsuario[reqNombre];
@@ -328,7 +382,6 @@
     function renderMalla(diaFiltrado = 'todos') {
       const cont = document.getElementById('malla');
       cont.innerHTML = '';
-
       let sugeridas = [];
       let diasOcupados = {};
 
@@ -357,12 +410,11 @@
 
             if (esHabilitada) sugeridas.push(materia);
             
-            // Si está cursando, agregar al cronograma solo los días elegidos por el usuario
             if (historial.estado === 'cursando') {
               const diasACursar = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos : infoMat.dias;
               diasACursar.forEach(d => {
                 if (!diasOcupados[d]) diasOcupados[d] = [];
-                diasOcupados[d].push(materia.substring(0, 15) + "..");
+                diasOcupados[d].push(materia.substring(0, 14) + ".");
               });
             }
 
@@ -373,7 +425,6 @@
             divMateria.className = 'materia';
             divMateria.setAttribute('data-materia', materia);
             
-            // Configuración exacta de colores solicitados
             if (historial.estado === 'aprobada') divMateria.classList.add('estado-aprobada');
             else if (historial.estado === 'regular') divMateria.classList.add('estado-regular');
             else if (historial.estado === 'cursando') divMateria.classList.add('estado-cursando');
@@ -392,10 +443,9 @@
               </div>
             `;
             
-            // Clicks Inteligentes
             divMateria.addEventListener('click', (e) => {
               if (e.detail === 1) {
-                setTimeout(() => { if (e.detail === 1) auditarMateria(materia); }, 200);
+                setTimeout(() => { if (e.detail === 1) auditarMateria(materia); }, 220);
               } else if (e.detail === 2) {
                 abrirGestionMateria(materia);
               } else if (e.detail >= 3) {
@@ -417,7 +467,7 @@
 
     function renderWidgets(sugeridas, diasOcupados) {
       const list = document.getElementById('lista-sugeridas');
-      list.innerHTML = sugeridas.length ? sugeridas.map(m => `<li>${m} <span style="color:#7f8c8d; font-weight:normal;">(${datosMaterias[m].dias.join(', ')})</span></li>`).join('') : '<li>No hay nuevas materias habilitadas.</li>';
+      list.innerHTML = sugeridas.length ? sugeridas.map(m => `<li>${m} <span style="opacity:0.7; font-weight:normal;">(${datosMaterias[m].dias.join(', ')})</span></li>`).join('') : '<li>No hay nuevas sugerencias.</li>';
 
       const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
       const cal = document.getElementById('calendar');
@@ -426,9 +476,7 @@
         return `
           <div class="calendar-day ${mats.length ? 'active' : ''}">
             <div class="day-name">${d}</div>
-            <div style="flex-grow:1; display:flex; flex-direction:column; justify-content:center;">
-              ${mats.length ? mats.map(m => `<div class="calendar-mat">${m}</div>`).join('') : '<span style="color:#bbb; font-size:0.7rem;">Libre</span>'}
-            </div>
+            <div>${mats.length ? mats.map(m => `<div class="calendar-mat">${m}</div>`).join('') : '<span style="opacity:0.4;">-</span>'}</div>
           </div>
         `;
       }).join('');
@@ -473,16 +521,10 @@
       document.getElementById('input-estado').value = historial.estado;
       document.getElementById('input-nota').value = historial.nota || '';
 
-      // Crear checkboxes dinámicos para los días disponibles de la materia
       const checkCont = document.getElementById('checkbox-container');
       checkCont.innerHTML = info.dias.map(d => {
-        // Si no hay días explícitamente guardados, se marcan todos por defecto
         const checked = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos.includes(d) : true;
-        return `
-          <label>
-            <input type="checkbox" name="elegir-dia" value="${d}" ${checked ? 'checked' : ''}> ${d}
-          </label>
-        `;
+        return `<label><input type="checkbox" name="elegir-dia" value="${d}" ${checked ? 'checked' : ''}> ${d}</label>`;
       }).join('');
 
       toggleFormulariosDinamicos();
@@ -492,7 +534,6 @@
     function toggleFormulariosDinamicos() {
       const estado = document.getElementById('input-estado').value;
       document.getElementById('group-nota').style.display = (estado === 'aprobada') ? 'flex' : 'none';
-      // Solo mostrar selección de días si está en estado "cursando"
       document.getElementById('group-dias-elegidos').style.display = (estado === 'cursando') ? 'flex' : 'none';
     }
 
@@ -508,20 +549,12 @@
       const estado = document.getElementById('input-estado').value;
       const nota = document.getElementById('input-nota').value;
 
-      // Extraer los días que el usuario seleccionó cursar
       let diasElegidos = [];
       if (estado === 'cursando') {
-        document.querySelectorAll('input[name="elegir-dia"]:checked').forEach(chk => {
-          diasElegidos.push(chk.value);
-        });
+        document.querySelectorAll('input[name="elegir-dia"]:checked').forEach(chk => diasElegidos.push(chk.value));
       }
 
-      progresoUsuario[mSeleccionada] = { 
-        estado: estado, 
-        nota: estado === 'aprobada' ? nota : null,
-        diasElegidos: diasElegidos
-      };
-      
+      progresoUsuario[mSeleccionada] = { estado: estado, nota: estado === 'aprobada' ? nota : null, diasElegidos: diasElegidos };
       localStorage.setItem('progresoMecanicaUNLZ_V3', JSON.stringify(progresoUsuario));
       
       renderMalla(document.getElementById('filter-day').value);
@@ -532,7 +565,52 @@
       renderMalla(document.getElementById('filter-day').value);
     }
 
-    window.onload = () => { renderMalla(); };
+    /* SISTEMA DE PERSONALIZACIÓN DE DISEÑO */
+    function toggleDesignPanel() {
+      const panel = document.getElementById('design-panel');
+      panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function cambiarVariableCSS(propiedad, valor) {
+      document.documentElement.style.setProperty(propiedad, valor);
+      disenoPersonalizado[propiedad] = valor;
+      localStorage.setItem('disenoMallaMecanica', JSON.stringify(disenoPersonalizado));
+    }
+
+    function cambiarFondoPantalla(url) {
+      if(!url) return;
+      document.body.style.backgroundImage = `url('${url}')`;
+      disenoPersonalizado['--bg-image'] = url;
+      localStorage.setItem('disenoMallaMecanica', JSON.stringify(disenoPersonalizado));
+    }
+
+    function cargarDisenoGuardado() {
+      // Aplicar colores e imagen guardados en la sesión anterior
+      if (disenoPersonalizado['--bg-image']) {
+        document.body.style.backgroundImage = `url('${disenoPersonalizado['--bg-image']}')`;
+        document.getElementById('design-bg-url').value = disenoPersonalizado['--bg-image'];
+      }
+      const propiedades = ['--color-aprobada', '--color-regular', '--color-cursando', '--color-crema', '--color-bloqueada'];
+      propiedades.forEach(p => {
+        if (disenoPersonalizado[p]) {
+          document.documentElement.style.setProperty(p, disenoPersonalizado[p]);
+          const inputId = p.replace('--color-', 'p-');
+          const element = document.getElementById(inputId);
+          if (element) element.value = disenoPersonalizado[p];
+        }
+      });
+    }
+
+    function restablecerDisenoOriginal() {
+      localStorage.removeItem('disenoMallaMecanica');
+      disenoPersonalizado = {};
+      location.reload();
+    }
+
+    window.onload = () => { 
+      cargarDisenoGuardado();
+      renderMalla(); 
+    };
   </script>
 </body>
 </html>
