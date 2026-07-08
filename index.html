@@ -1,6 +1,4 @@
-Giuli<3
-
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -11,8 +9,8 @@ Giuli<3
       --color-aprobada: #2ecc71;
       --color-regular: #f1c40f;
       --color-cursando: #3498db;
-      --color-disponible: #fffdf2; /* Blanco Crema */
-      --color-bloqueada: #e2e2e2;
+      --color-crema: #fffdf0; /* Crema para habilitadas */
+      --color-bloqueada: #cccccc; /* Gris oscuro */
     }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -65,10 +63,9 @@ Giuli<3
       border-radius: 4px;
       padding: 8px 4px;
       font-size: 0.75rem;
-      min-height: 50px;
+      min-height: 60px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
     }
     .calendar-day.active {
       background: #ebf5fb;
@@ -77,6 +74,7 @@ Giuli<3
       font-weight: bold;
     }
     .day-name { font-weight: bold; border-bottom: 1px solid #ddd; margin-bottom: 4px; color: #555; }
+    .calendar-mat { font-size: 0.7rem; margin-top: 2px; background: rgba(52, 152, 219, 0.15); border-radius: 3px; padding: 1px; }
 
     .layout-container {
       display: flex;
@@ -109,7 +107,7 @@ Giuli<3
       padding-bottom: 0.4rem;
     }
     
-    /* Tarjetas de Materia */
+    /* Tarjetas de Materia con la nueva lógica estricta de colores */
     .materia {
       padding: 0.8rem;
       border: 2px solid #ccc;
@@ -127,12 +125,11 @@ Giuli<3
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     
-    /* Sistema de colores base solicitado */
-    .materia.estado-aprobada { border-color: var(--color-aprobada) !important; background-color: #eafeea !important; }
-    .materia.estado-regular { border-color: var(--color-regular) !important; background-color: #fef9e7 !important; }
-    .materia.estado-cursando { border-color: var(--color-cursando) !important; background-color: #ebf5fb !important; }
-    .materia.estado-disponible { border-color: #bfa37a !important; background-color: var(--color-disponible) !important; }
-    .materia.estado-bloqueada { border-color: #bdc3c7 !important; background-color: var(--color-bloqueada) !important; color: #7f8c8d; }
+    .materia.estado-aprobada { border-color: var(--color-aprobada) !important; background-color: #eafeea !important; color: #27ae60; }
+    .materia.estado-regular { border-color: var(--color-regular) !important; background-color: #fff9d4 !important; color: #b7950b; }
+    .materia.estado-cursando { border-color: var(--color-cursando) !important; background-color: #ebf5fb !important; color: #2980b9; }
+    .materia.estado-crema { border-color: #dfd49e !important; background-color: var(--color-crema) !important; color: #444; }
+    .materia.estado-bloqueada { border-color: #999999 !important; background-color: var(--color-bloqueada) !important; color: #666; }
 
     /* Efectos dinámicos por clicks */
     .materia.highlight-missing { border-color: #e74c3c !important; background-color: #fdeaea !important; box-shadow: 0 0 8px rgba(231, 76, 60, 0.6); color: #333; }
@@ -155,6 +152,8 @@ Giuli<3
     }
     .form-group { margin-top: 12px; display: flex; flex-direction: column; gap: 4px; }
     .form-group select, .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    .checkbox-days { display: flex; flex-direction: column; gap: 5px; margin-top: 5px; background: #fafafa; padding: 8px; border-radius: 4px; border: 1px solid #eee; }
+    .checkbox-days label { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .btn-guardar { margin-top: 12px; background-color: #880e0e; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
     .btn-guardar:hover { background-color: #b71c1c; }
     .req-list { padding-left: 20px; margin: 8px 0; font-size: 0.85rem; }
@@ -181,21 +180,19 @@ Giuli<3
   </header>
 
   <div class="top-widgets">
-    <!-- Sugeridor inteligente -->
     <div class="widget-box">
-      <h3>💡 Materias Sugeridas para el Próximo Cuatrimestre</h3>
+      <h3>💡 Sugerencias para cursar el próximo cuatrimestre</h3>
       <ul id="lista-sugeridas" class="sugeridas-list"></ul>
     </div>
 
-    <!-- Calendario de colisiones -->
     <div class="widget-box">
-      <h3>📅 Horarios Ocupados (Cursando Actual)</h3>
+      <h3>📅 Cronograma de Cursada Semanal</h3>
       <div class="calendar-grid" id="calendar"></div>
     </div>
   </div>
 
   <div class="instruction-tip">
-    💡 <strong>Instrucciones:</strong> 1 Clic para auditar correlativas | Doble Clic para gestionar estado y nota | 3 Clics rápidos para restaurar vista general.
+    💡 <strong>Instrucciones:</strong> 1 Clic para auditar correlativas | Doble Clic para gestionar estado, nota y días | 3 Clics rápidos para restaurar vista general.
   </div>
 
   <div class="layout-container">
@@ -210,13 +207,13 @@ Giuli<3
       <div id="sidebar-content" style="display: none;">
         <h4 id="info-nombre" style="color: #880e0e; margin: 0 0 8px 0;"></h4>
         <p style="margin: 3px 0; font-size:0.85rem;"><strong>Horas:</strong> <span id="info-horas"></span> | <span id="info-turnos"></span></p>
-        <p style="margin: 3px 0; font-size:0.85rem;"><strong>Cursada:</strong> <span id="info-dias"></span></p>
+        <p style="margin: 3px 0; font-size:0.85rem;"><strong>Días Base:</strong> <span id="info-dias"></span></p>
         
         <hr style="border: 0; border-top: 1px solid #eee; margin: 12px 0;">
         
         <div class="form-group">
           <label for="input-estado"><strong>Condición Académica:</strong></label>
-          <select id="input-estado" onchange="toggleInputNota()">
+          <select id="input-estado" onchange="toggleFormulariosDinamicos()">
             <option value="pendiente">Pendiente</option>
             <option value="cursando">Cursando actualmente</option>
             <option value="regular">Regular (Adeuda examen final)</option>
@@ -227,6 +224,11 @@ Giuli<3
         <div class="form-group" id="group-nota" style="display: none;">
           <label for="input-nota"><strong>Nota Final:</strong></label>
           <input type="number" id="input-nota" min="4" max="10" placeholder="Ej: 8">
+        </div>
+
+        <div class="form-group" id="group-dias-elegidos" style="display: none;">
+          <label><strong>Elegir días específicos a cursar:</strong></label>
+          <div id="checkbox-container" class="checkbox-days"></div>
         </div>
 
         <button class="btn-guardar" onclick="guardarEstadoMateria()">Guardar Historial</button>
@@ -305,12 +307,17 @@ Giuli<3
        ["Proyecto en ingeniería mecánica", "Tecnología de la soldadura", "Gestion e ingenieria del mantenimiento", "Tecnologia del frio", "Sistema de control"]]
     ];
 
-    let progresoUsuario = JSON.parse(localStorage.getItem('progresoMecanicaUNLZ_V2')) || {};
-    let materiaSeleccionadaActual = "";
+    let progresoUsuario = JSON.parse(localStorage.getItem('progresoMecanicaUNLZ_V3')) || {};
+    let mSeleccionada = "";
 
     function verificarHabilitacion(nombreMateria) {
       const info = datosMaterias[nombreMateria];
-      if (!info || (progresoUsuario[nombreMateria] && progresoUsuario[nombreMateria].estado === 'aprobada')) return false;
+      if (!info) return false;
+      
+      const historial = progresoUsuario[nombreMateria] || { estado: 'pendiente' };
+      // Si ya está aprobada o regularizada, NO cuenta como sugerencia/pendiente habilitada
+      if (historial.estado === 'aprobada' || historial.estado === 'regular' || historial.estado === 'cursando') return false;
+      
       if (info.req.length === 0) return true;
       return info.req.every(reqNombre => {
         const mReq = progresoUsuario[reqNombre];
@@ -345,12 +352,18 @@ Giuli<3
             const infoMat = datosMaterias[materia];
             if (!infoMat) return;
 
-            const historial = progresoUsuario[materia] || { estado: 'pendiente' };
+            const historial = progresoUsuario[materia] || { estado: 'pendiente', diasElegidos: [] };
             const esHabilitada = verificarHabilitacion(materia);
 
             if (esHabilitada) sugeridas.push(materia);
+            
+            // Si está cursando, agregar al cronograma solo los días elegidos por el usuario
             if (historial.estado === 'cursando') {
-              infoMat.dias.forEach(d => diasOcupados[d] = (diasOcupados[d] ? diasOcupados[d] + " / " : "") + materia.substring(0,12) + "..");
+              const diasACursar = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos : infoMat.dias;
+              diasACursar.forEach(d => {
+                if (!diasOcupados[d]) diasOcupados[d] = [];
+                diasOcupados[d].push(materia.substring(0, 15) + "..");
+              });
             }
 
             if (diaFiltrado !== 'todos' && !infoMat.dias.includes(diaFiltrado)) return;
@@ -360,11 +373,11 @@ Giuli<3
             divMateria.className = 'materia';
             divMateria.setAttribute('data-materia', materia);
             
-            // Inyectar clase de color base solicitado
+            // Configuración exacta de colores solicitados
             if (historial.estado === 'aprobada') divMateria.classList.add('estado-aprobada');
             else if (historial.estado === 'regular') divMateria.classList.add('estado-regular');
             else if (historial.estado === 'cursando') divMateria.classList.add('estado-cursando');
-            else if (esHabilitada) divMateria.classList.add('estado-disponible');
+            else if (esHabilitada) divMateria.classList.add('estado-crema');
             else divMateria.classList.add('estado-bloqueada');
             
             if (historial.estado === 'aprobada' && historial.nota) {
@@ -379,7 +392,7 @@ Giuli<3
               </div>
             `;
             
-            // Manejador de Clicks Inteligentes (1 click, doble click, triple click)
+            // Clicks Inteligentes
             divMateria.addEventListener('click', (e) => {
               if (e.detail === 1) {
                 setTimeout(() => { if (e.detail === 1) auditarMateria(materia); }, 200);
@@ -404,16 +417,21 @@ Giuli<3
 
     function renderWidgets(sugeridas, diasOcupados) {
       const list = document.getElementById('lista-sugeridas');
-      list.innerHTML = sugeridas.length ? sugeridas.map(m => `<li>${m} (${datosMaterias[m].dias.join(', ')})</li>`).join('') : '<li>No hay materias disponibles actualmente.</li>';
+      list.innerHTML = sugeridas.length ? sugeridas.map(m => `<li>${m} <span style="color:#7f8c8d; font-weight:normal;">(${datosMaterias[m].dias.join(', ')})</span></li>`).join('') : '<li>No hay nuevas materias habilitadas.</li>';
 
       const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
       const cal = document.getElementById('calendar');
-      cal.innerHTML = diasSemana.map(d => `
-        <div class="calendar-day ${diasOcupados[d] ? 'active' : ''}">
-          <div class="day-name">${d}</div>
-          <div>${diasOcupados[d] || '<span style="color:#bbb;">Libre</span>'}</div>
-        </div>
-      `).join('');
+      cal.innerHTML = diasSemana.map(d => {
+        const mats = diasOcupados[d] || [];
+        return `
+          <div class="calendar-day ${mats.length ? 'active' : ''}">
+            <div class="day-name">${d}</div>
+            <div style="flex-grow:1; display:flex; flex-direction:column; justify-content:center;">
+              ${mats.length ? mats.map(m => `<div class="calendar-mat">${m}</div>`).join('') : '<span style="color:#bbb; font-size:0.7rem;">Libre</span>'}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function auditarMateria(nombreMateria) {
@@ -441,7 +459,7 @@ Giuli<3
     }
 
     function abrirGestionMateria(nombreMateria) {
-      materiaSeleccionadaActual = nombreMateria;
+      mSeleccionada = nombreMateria;
       const info = datosMaterias[nombreMateria];
       
       document.getElementById('sidebar-default').style.display = 'none';
@@ -451,32 +469,60 @@ Giuli<3
       document.getElementById('info-dias').innerText = info.dias.join(', ');
       document.getElementById('info-turnos').innerText = info.turno;
 
-      const historial = progresoUsuario[nombreMateria] || { estado: 'pendiente', nota: '' };
+      const historial = progresoUsuario[nombreMateria] || { estado: 'pendiente', nota: '', diasElegidos: [] };
       document.getElementById('input-estado').value = historial.estado;
       document.getElementById('input-nota').value = historial.nota || '';
-      toggleInputNota();
+
+      // Crear checkboxes dinámicos para los días disponibles de la materia
+      const checkCont = document.getElementById('checkbox-container');
+      checkCont.innerHTML = info.dias.map(d => {
+        // Si no hay días explícitamente guardados, se marcan todos por defecto
+        const checked = (historial.diasElegidos && historial.diasElegidos.length > 0) ? historial.diasElegidos.includes(d) : true;
+        return `
+          <label>
+            <input type="checkbox" name="elegir-dia" value="${d}" ${checked ? 'checked' : ''}> ${d}
+          </label>
+        `;
+      }).join('');
+
+      toggleFormulariosDinamicos();
       auditarMateria(nombreMateria);
+    }
+
+    function toggleFormulariosDinamicos() {
+      const estado = document.getElementById('input-estado').value;
+      document.getElementById('group-nota').style.display = (estado === 'aprobada') ? 'flex' : 'none';
+      // Solo mostrar selección de días si está en estado "cursando"
+      document.getElementById('group-dias-elegidos').style.display = (estado === 'cursando') ? 'flex' : 'none';
     }
 
     function restaurarVistaGeneral() {
       document.querySelectorAll('.materia').forEach(m => m.classList.remove('highlight-missing', 'highlight-ok', 'dimmed'));
       document.getElementById('sidebar-default').style.display = 'block';
       document.getElementById('sidebar-content').style.display = 'none';
-      materiaSeleccionadaActual = "";
-    }
-
-    function toggleInputNota() {
-      const estado = document.getElementById('input-estado').value;
-      document.getElementById('group-nota').style.display = (estado === 'aprobada') ? 'flex' : 'none';
+      mSeleccionada = "";
     }
 
     function guardarEstadoMateria() {
-      if (!materiaSeleccionadaActual) return;
+      if (!mSeleccionada) return;
       const estado = document.getElementById('input-estado').value;
       const nota = document.getElementById('input-nota').value;
 
-      progresoUsuario[materiaSeleccionadaActual] = { estado: estado, nota: estado === 'aprobada' ? nota : null };
-      localStorage.setItem('progresoMecanicaUNLZ_V2', JSON.stringify(progresoUsuario));
+      // Extraer los días que el usuario seleccionó cursar
+      let diasElegidos = [];
+      if (estado === 'cursando') {
+        document.querySelectorAll('input[name="elegir-dia"]:checked').forEach(chk => {
+          diasElegidos.push(chk.value);
+        });
+      }
+
+      progresoUsuario[mSeleccionada] = { 
+        estado: estado, 
+        nota: estado === 'aprobada' ? nota : null,
+        diasElegidos: diasElegidos
+      };
+      
+      localStorage.setItem('progresoMecanicaUNLZ_V3', JSON.stringify(progresoUsuario));
       
       renderMalla(document.getElementById('filter-day').value);
       restaurarVistaGeneral();
@@ -489,4 +535,4 @@ Giuli<3
     window.onload = () => { renderMalla(); };
   </script>
 </body>
-</html>  
+</html>
